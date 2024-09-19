@@ -1,0 +1,28 @@
+{
+  "name": "videotube",
+  "version": "1.0.0",
+  "main": "index.js",
+  "scripts": {
+    "dev": "nodemon --exec babel-node src/server.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/MamDaeRoHae/VideoTube.git"
+  },
+  "author": "",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/MamDaeRoHae/VideoTube/issues"
+  },
+  "homepage": "https://github.com/MamDaeRoHae/VideoTube#readme",
+  "description": "",
+  "dependencies": {
+    "express": "^4.20.0"
+  },
+  "devDependencies": {
+    "@babel/core": "^7.25.2",
+    "@babel/node": "^7.25.0",
+    "@babel/preset-env": "^7.25.4",
+    "nodemon": "^3.1.4"
+  }
+}

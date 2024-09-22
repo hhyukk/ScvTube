@@ -11,6 +11,11 @@ export const postUpload = async (req, res) => {
     return res.status(200).send('Upload successful');
   } catch (error) {
     console.log(error);
-    return res.status(404).render('upload', { pageTitle: 'Upload Video', errorMessage: error._message });
+    return res.status(404).send(error);
   }
+};
+
+export const home = async (req, res) => {
+  const videos = await Video.find({}).sort({ createdAt: 'desc' });
+  return res.status(200).json(videos);
 };

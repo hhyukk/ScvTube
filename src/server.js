@@ -1,6 +1,8 @@
 import express from 'express';
+import './db.js';
+import './models/Video';
 
-const PORT = 4100;
+const PORT = 4000;
 
 const app = express();
 

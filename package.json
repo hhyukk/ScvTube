@@ -17,7 +17,8 @@
   "homepage": "https://github.com/MamDaeRoHae/VideoTube#readme",
   "description": "",
   "dependencies": {
-    "express": "^4.20.0"
+    "express": "^4.20.0",
+    "mongoose": "^8.6.3"
   },
   "devDependencies": {
     "@babel/core": "^7.25.2",

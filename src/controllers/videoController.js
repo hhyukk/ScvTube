@@ -1,5 +1,21 @@
 import Video from '../models/Video';
 
+export const postEdit = async (req, res) => {
+  const { id } = req.params;
+  const { title, description, hashtags } = req.body;
+
+  const video = await Video.exists({ _id: id });
+  if (!video) {
+    return res.status(404).send('not Exist Video');
+  }
+  await Video.findByIdAndUpdate(id, {
+    title,
+    description,
+    hashtags: Video.formatHashtags(hashtags),
+  });
+  return res.status(200).send('Edit successful');
+};
+
 export const postUpload = async (req, res) => {
   const { title, description, hashtags } = req.body;
   try {

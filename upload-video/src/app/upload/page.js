@@ -6,59 +6,35 @@ export default function UploadPage() {
   const [title, setTitle] = useState('');
   const [description, setDescription] = useState('');
   const [tags, setTags] = useState('');
-  const [videoFile, setVideoFile] = useState(null);
+  // const [videoFile, setVideoFile] = useState(null); // 파일 관련 코드 주석 처리
   const [videoList, setVideoList] = useState([]);
 
-  //파일 변경 핸들러
-  const handleFileChange = (event) => {
-    setVideoFile(event.target.files[0]);
-  };
+  // 파일 변경 핸들러 주석 처리
+  // const handleFileChange = (event) => {
+  //   setVideoFile(event.target.files[0]);
+  // };
 
-  const handleUpload = async () => {
-    if (!title || !description || !tags || !videoFile) {
-      alert('모든 필드를 입력하고 비디오 파일을 추가하세요.');
+  const handleUpload = () => {
+    if (!title || !description || !tags) {
+      alert('모든 필드를 입력하세요.');
       return;
     }
 
-    const formData = new FormData();
-    formData.append('title', title);
-    formData.append('description', description);
-    formData.append('hashtags', tags);
-    formData.append('video', videoFile);
+    const newVideo = {
+      title,
+      description,
+      tags,
+      createdAt: new Date().toLocaleString(), // 현재 시간을 등록
+    };
 
-    try {
-      const response = await fetch('http://localhost:4000/videos/upload', {
-        method: 'POST',
-        body: formData,
-      });
+    setVideoList((prevList) => [...prevList, newVideo]);
 
-      if (response.ok) {
-        alert('업로드가 성공적으로 완료되었습니다!');
-        fetchVideos(); // 업로드 후 비디오 리스트 다시 불러오기
-      } else {
-        alert('업로드에 실패했습니다.');
-      }
-    } catch (error) {
-      console.error('업로드 중 에러 발생:', error);
-      alert('업로드 중 문제가 발생했습니다.');
-    }
+    // 입력 후 필드 초기화
+    setTitle('');
+    setDescription('');
+    setTags('');
+    alert('업로드가 성공적으로 완료되었습니다!');
   };
-
-  // 서버에서 비디오 리스트 불러오기
-  const fetchVideos = async () => {
-    try {
-      const response = await fetch('http://localhost:4000/');
-      const data = await response.json();
-      setVideoList(data);
-    } catch (error) {
-      console.error('비디오 리스트를 불러오는 중 에러 발생:', error);
-    }
-  };
-
-  // 페이지 로드 시 비디오 리스트 불러오기
-  useEffect(() => {
-    fetchVideos();
-  }, []);
 
   return (
     <div className="upload-container">
@@ -97,7 +73,8 @@ export default function UploadPage() {
         />
       </div>
 
-      <div className="input-group">
+      {/* 파일 업로드 부분 주석 처리 */}
+      {/* <div className="input-group">
         <label htmlFor="videoFile">파일</label>
         <input
           type="file"
@@ -106,11 +83,26 @@ export default function UploadPage() {
           onChange={handleFileChange}
         />
         {videoFile && <p>선택된 파일: {videoFile.name}</p>}
-      </div>
+      </div> */}
 
       <button className="upload-button" onClick={handleUpload}>
         Upload Video
       </button>
+
+      {/* 등록된 비디오 리스트를 출력 */}
+      <div className="video-list">
+        <h2>업로드된 비디오</h2>
+        <ul>
+          {videoList.map((video, index) => (
+            <li key={index}>
+              <strong>제목:</strong> {video.title} <br />
+              <strong>설명:</strong> {video.description} <br />
+              <strong>태그:</strong> {video.tags} <br />
+              <strong>업로드 시간:</strong> {video.createdAt} <br />
+            </li>
+          ))}
+        </ul>
+      </div>
     </div>
   );
 }

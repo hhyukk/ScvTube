@@ -1,5 +1,21 @@
 import Video from '../models/Video';
 
+export const getSearch = async (req, res) => {
+  const { keyword } = req.query;
+  let videos = [];
+  if (keyword) {
+    videos = await Video.find({
+      title: {
+        //query의 keyword 값을 대소문자 구분없이 검색
+        $regex: new RegExp(keyword, 'i'),
+      },
+    });
+    console.log(videos);
+    return res.status(200).json(videos);
+  } else {
+    return res.status(404).send('Search Fail');
+  }
+};
 export const postDelete = async (req, res) => {
   const { id } = req.params;
   await Video.findByIdAndDelete(id);

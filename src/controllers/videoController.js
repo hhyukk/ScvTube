@@ -1,5 +1,17 @@
+import User from '../models/User';
 import Video from '../models/Video';
 
+export const postJoin = async (req, res) => {
+  const { name, username, email, password, location } = req.body;
+  await User.create({
+    name,
+    username,
+    email,
+    password,
+    location,
+  });
+  return res.status(200).send('join successful');
+};
 export const getSearch = async (req, res) => {
   const { keyword } = req.query;
   let videos = [];

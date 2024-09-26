@@ -1,6 +1,7 @@
 import express from 'express';
 import './db.js';
 import './models/Video';
+import './models/User';
 import videoRouter from './routers/videoRouter';
 import rootRouter from './routers/rootRouter';
 

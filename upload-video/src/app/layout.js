@@ -32,7 +32,7 @@ export default function RootLayout({ children }) {
           </div>
           <div className={`menu ${isMenuOpen ? 'open' : ''}`}>
             <a href="/">Home</a>
-            <a href="/sign-up">Sign up</a>
+            <a href="/signup">Sign up</a>
             <a href="/login">Login</a>
             <a href="/search">Search</a>
             <a href="/upload">Upload Video</a>

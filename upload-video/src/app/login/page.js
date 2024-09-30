@@ -11,7 +11,7 @@ export default function LoginPage() {
             <h1>로그인</h1>
             <form>
                 <div className="login-input-group">
-                    <lable htmlFor="username">유저네임</lable>
+                    <label htmlFor="username">유저네임</label>
                     <input
                     type="text"
                     id="username"

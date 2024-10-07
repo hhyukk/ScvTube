@@ -1,39 +1,80 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
 
 export default function UploadPage() {
   const [title, setTitle] = useState('');
   const [description, setDescription] = useState('');
   const [tags, setTags] = useState('');
-  // const [videoFile, setVideoFile] = useState(null); // 파일 관련 코드 주석 처리
+  const [videoFile, setVideoFile] = useState(null);
   const [videoList, setVideoList] = useState([]);
 
-  // 파일 변경 핸들러 주석 처리
-  // const handleFileChange = (event) => {
-  //   setVideoFile(event.target.files[0]);
-  // };
+  const handleFileChange = (event) => {
+    setVideoFile(event.target.files[0]);
+  };
 
-  const handleUpload = () => {
+  const handleUpload = async () => {
     if (!title || !description || !tags) {
       alert('모든 필드를 입력하세요.');
       return;
     }
 
     const newVideo = {
+      id: Date.now(),
       title,
       description,
       tags,
-      createdAt: new Date().toLocaleString(), // 현재 시간을 등록
+      createdAt: new Date().toLocaleString(),
     };
 
     setVideoList((prevList) => [...prevList, newVideo]);
 
-    // 입력 후 필드 초기화
-    setTitle('');
-    setDescription('');
-    setTags('');
-    alert('업로드가 성공적으로 완료되었습니다!');
+    const formData = new FormData();
+    formData.append('title', title);
+    formData.append('description', description);
+    formData.append('tags', tags);
+    formData.append('file', videoFile);
+
+    try {
+      const response = await fetch('http://localhost:4000/videos/upload', {
+        method: 'POST',
+        body: formData,
+      });
+
+      if (response.ok) {
+        alert('업로드가 성공적으로 완료되었습니다!');
+        setTitle('');
+        setDescription('');
+        setTags('');
+        setVideoFile(null);
+      } else {
+        alert('업로드에 실패했습니다.');
+      }
+    } catch (error) {
+      console.error('Error uploading video:', error);
+      alert('업로드 중 오류가 발생했습니다.');
+    }
+  };
+
+  const handleDelete = async (videoId) => {
+    const confirmDelete = window.confirm('정말로 삭제하시겠습니까?');
+    if (!confirmDelete) return;
+
+    try {
+      const response = await fetch(`http://localhost:4000/videos/${videoId}/delete`, {
+        method: 'POST',
+      });
+
+      if (response.ok) {
+        setVideoList((prevList) => prevList.filter((video) => video.id !== videoId));
+        alert('영상이 성공적으로 삭제되었습니다.');
+      } else {
+        alert('삭제에 실패했습니다.');
+      }
+    } catch (error) {
+      console.error('Error deleting video:', error);
+      alert('삭제 중 오류가 발생했습니다.');
+    }
   };
 
   return (
@@ -73,8 +114,7 @@ export default function UploadPage() {
         />
       </div>
 
-      {/* 파일 업로드 부분 주석 처리 */}
-      {/* <div className="input-group">
+      <div className="input-group">
         <label htmlFor="videoFile">파일</label>
         <input
           type="file"
@@ -83,22 +123,23 @@ export default function UploadPage() {
           onChange={handleFileChange}
         />
         {videoFile && <p>선택된 파일: {videoFile.name}</p>}
-      </div> */}
+      </div>
 
       <button className="upload-button" onClick={handleUpload}>
         Upload Video
       </button>
 
-      {/* 등록된 비디오 리스트를 출력 */}
       <div className="video-list">
         <h2>업로드된 비디오</h2>
         <ul>
-          {videoList.map((video, index) => (
-            <li key={index}>
+          {videoList.map((video) => (
+            <li key={video.id}>
               <strong>제목:</strong> {video.title} <br />
               <strong>설명:</strong> {video.description} <br />
               <strong>태그:</strong> {video.tags} <br />
               <strong>업로드 시간:</strong> {video.createdAt} <br />
+              <button onClick={() => window.location.href = `http://localhost:4000/videos/${video.id}/edit`}>수정</button>
+              <button onClick={() => handleDelete(video.id)}>삭제</button>
             </li>
           ))}
         </ul>

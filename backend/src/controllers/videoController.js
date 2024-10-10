@@ -1,22 +1,4 @@
-import User from '../models/User';
 import Video from '../models/Video';
-
-export const postJoin = async (req, res) => {
-  const { name, username, email, password, location } = req.body;
-  try {
-    await User.create({
-      name,
-      username,
-      email,
-      password,
-      location,
-    });
-    return res.status(200).json({ message: 'Join successful' }); // JSON 응답
-  } catch (error) {
-    console.error(error);
-    return res.status(500).json({ error: 'Server Error' });
-  }
-};
 
 export const getSearch = async (req, res) => {
   const { keyword } = req.query;

@@ -17,7 +17,6 @@ app.use(
     methods: 'GET,POST,PUT,DELETE', // 허용할 HTTP 메소드 설정
   })
 );
-
 app.use(express.json()); // 추가: JSON 요청 본문 파싱
 
 app.use('/', rootRouter);

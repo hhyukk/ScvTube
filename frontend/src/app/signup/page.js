@@ -11,11 +11,13 @@ export default function SignupPage() {
     const [location, setLocation] = useState('');
     const [error, setError] = useState(null);
     const [loading, setLoading] = useState(false);
+    const [successMessage, setSuccessMessage] = useState('');
 
     const handleSubmit = async (e) => {
         e.preventDefault();
         setLoading(true);
         setError(null);
+        setSuccessMessage('');
 
         if (password !== password2) {
             setError('비밀번호가 일치하지 않습니다.');
@@ -36,8 +38,11 @@ export default function SignupPage() {
 
             if (response.ok) {
                 console.log('회원가입 성공:', data);
-                localStorage.setItem('isLoggedIn', 'true');
-                window.location.href = '/';
+                setSuccessMessage('회원가입 성공! 로그인 페이지로 이동합니다.');
+                // 잠시 후 로그인 페이지로 리다이렉트
+                setTimeout(() => {
+                    window.location.href = '/login';
+                }, 2000);
             } else {
                 throw new Error(data.message || '회원가입 실패');
             }
@@ -125,6 +130,7 @@ export default function SignupPage() {
                 </div>
 
                 {error && <p className="error-message">{error}</p>}
+                {successMessage && <p className="success-message">{successMessage}</p>}
                 <button type="submit" className="signup-button" disabled={loading}>
                     {loading ? '가입 중...' : '회원가입'}
                 </button>

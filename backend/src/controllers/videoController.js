@@ -1,5 +1,14 @@
 import Video from '../models/Video';
 
+export const watch = async (req, res) => {
+  const { id } = req.params;
+  const video = await Video.findById(id);
+  if (!video) {
+    return res.status(404).json({ error: 'not find Video' });
+  }
+  return res.status(200).json(video);
+};
+
 export const getSearch = async (req, res) => {
   const { keyword } = req.query;
   let videos = [];

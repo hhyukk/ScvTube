@@ -2,42 +2,37 @@
 
 import { useEffect, useState } from 'react';
 
-export default function Home() {
+export default function UploadPage() {
   const [videoList, setVideoList] = useState([]);
+  const [isHydrated, setIsHydrated] = useState(false);
 
   useEffect(() => {
-    const fetchVideos = async () => {
-      try {
-        const response = await fetch('http://localhost:4000/videos');
-        const videos = await response.json();
-        setVideoList(videos);
-      } catch (error) {
-        console.error('Error fetching videos:', error);
-      }
-    };
-
-    fetchVideos();
+    const savedVideos = localStorage.getItem('videoList');
+    if (savedVideos) {
+      setVideoList(JSON.parse(savedVideos));
+    }
+    setIsHydrated(true);
   }, []);
 
   return (
-    <div className="main-container">
-      <h1>WeTube에 온 것을 환영합니다!</h1>
-      <p>동영상을 쉽게 업로드하고 시청하세요!!!</p>
+    <div className="upload-container">
+      <h1>당신의 영상을 업로드하세요!</h1>
 
-      <h2>업로드된 동영상</h2>
-      {videoList.length > 0 ? (
-        <ul>
-          {videoList.map((video) => (
-            <li key={video.id}>
-              <h3>{video.title}</h3>
-              <p>{video.description}</p>
-              <small>업로드 시간: {video.createdAt}</small>
-            </li>
-          ))}
-        </ul>
-      ) : (
-        <p>업로드된 영상이 없습니다.</p>
-      )}
+      <div className="video-list">
+        <h2>업로드된 비디오</h2>
+        {isHydrated && (
+          <ul>
+            {videoList.map((video) => (
+              <li key={video.id} onClick={() => window.location.href = `/videos/${video.id}`}>
+                <strong>제목:</strong> {video.title} <br />
+                <strong>설명:</strong> {video.description} <br />
+                <strong>태그:</strong> {video.tags} <br />
+                <strong>업로드 시간:</strong> {video.createdAt} <br />
+              </li>
+            ))}
+          </ul>
+        )}
+      </div>
     </div>
   );
 }

@@ -4,72 +4,95 @@ import './globals.css';
 import { useState, useEffect } from 'react';
 
 export default function RootLayout({ children }) {
-    const [isMenuOpen, setMenuOpen] = useState(false);
-    const [isLoggedIn, setIsLoggedIn] = useState(false);
-    const [searchKeyword, setSearchKeyword] = useState(''); // 검색어 상태 추가
+  const [isMenuOpen, setMenuOpen] = useState(false);
+  const [isLoggedIn, setIsLoggedIn] = useState(false);
+  const [searchKeyword, setSearchKeyword] = useState('');
 
-    useEffect(() => {
-        // const loggedIn = localStorage.getItem('isLoggedIn');
-        // if (loggedIn === 'true') {
-        //     setIsLoggedIn(true);
-        // }
-    }, []);
+  useEffect(() => {
+    // 페이지가 로드될 때 세션을 확인하여 로그인 상태 업데이트
+    const checkSession = async () => {
+      try {
+        const response = await fetch('http://localhost:4000/session', {
+          method: 'GET',
+          credentials: 'include', // 세션 쿠키를 포함하여 요청
+        });
+        const data = await response.json();
 
-    const toggleMenu = () => {
-        setMenuOpen(!isMenuOpen);
-    };
-
-    const handleLogout = () => {
-        setIsLoggedIn(false);
-        localStorage.removeItem('isLoggedIn');
-        window.location.href = '/login';
-    };
-
-    const handleSearch = () => {
-        if (searchKeyword.trim()) {
-            window.location.href = `/search?keyword=${encodeURIComponent(searchKeyword)}`; // 검색 페이지로 이동
-        } else {
-            alert('검색어를 입력하세요.');
+        if (data.loggedIn) {
+          setIsLoggedIn(true); // 로그인 상태로 업데이트
         }
+      } catch (err) {
+        console.error('세션 확인 오류:', err);
+      }
     };
 
-    return (
-        <html lang="en">
-            <body>
-                <nav className={`nav ${isMenuOpen ? 'open' : ''}`}>
-                    <div className="logo">
-                        <a href="/">Wetube</a>
-                    </div>
+    checkSession();
+  }, []);
 
-                    <div className="search-container">
-                        <input
-                            type="text"
-                            placeholder="검색어 입력..."
-                            value={searchKeyword}
-                            onChange={(e) => setSearchKeyword(e.target.value)} // 검색어 상태 업데이트
-                        />
-                        <button onClick={handleSearch}>검색</button> {/* 검색 버튼 추가 */}
-                    </div>
+  const toggleMenu = () => {
+    setMenuOpen(!isMenuOpen);
+  };
 
-                    <div className="hamburger" onClick={toggleMenu}>
-                        &#9776;
-                    </div>
-                    <div className={`menu ${isMenuOpen ? 'open' : ''}`}>
-                        <a href="/">Home</a>
-                        {!isLoggedIn && <a href="/signup">Sign up</a>}
-                        {!isLoggedIn ? (
-                            <a href="/login">Login</a>
-                        ) : (
-                            <>
-                                <a href="/profile">Profile</a>
-                                <button onClick={handleLogout}>Logout</button>
-                            </>
-                        )}
-                        <a href="/upload">Upload Video</a>
-                    </div>
-                </nav>
-                {children}
-            </body>
-        </html>
-    );
+  const handleLogout = async () => {
+    try {
+      // 로그아웃 처리
+      await fetch('http://localhost:4000/logout', {
+        method: 'POST',
+        credentials: 'include',
+      });
+
+      setIsLoggedIn(false);
+      window.location.href = '/login'; // 로그아웃 후 로그인 페이지로 이동
+    } catch (err) {
+      console.error('로그아웃 오류:', err);
+    }
+  };
+
+  const handleSearch = () => {
+    if (searchKeyword.trim()) {
+      window.location.href = `/search?keyword=${encodeURIComponent(searchKeyword)}`;
+    } else {
+      alert('검색어를 입력하세요.');
+    }
+  };
+
+  return (
+    <html lang="en">
+      <body>
+        <nav className={`nav ${isMenuOpen ? 'open' : ''}`}>
+          <div className="logo">
+            <a href="/">Wetube</a>
+          </div>
+
+          <div className="search-container">
+            <input
+              type="text"
+              placeholder="검색어 입력..."
+              value={searchKeyword}
+              onChange={(e) => setSearchKeyword(e.target.value)}
+            />
+            <button onClick={handleSearch}>검색</button>
+          </div>
+
+          <div className="hamburger" onClick={toggleMenu}>
+            &#9776;
+          </div>
+          <div className={`menu ${isMenuOpen ? 'open' : ''}`}>
+            <a href="/">Home</a>
+            {!isLoggedIn && <a href="/signup">Sign up</a>}
+            {!isLoggedIn ? (
+              <a href="/login">Login</a>
+            ) : (
+              <>
+                <a href="/profile">Profile</a>
+                <button onClick={handleLogout}>Logout</button>
+              </>
+            )}
+            <a href="/upload">Upload Video</a>
+          </div>
+        </nav>
+        {children}
+      </body>
+    </html>
+  );
 }

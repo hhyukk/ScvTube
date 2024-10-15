@@ -27,8 +27,7 @@ export default function LoginPage() {
 
       if (response.ok) {
         console.log('로그인 성공:', data);
-        // localStorage.setItem('isLoggedIn', 'true');
-        // window.location.href = '/';
+        window.location.href = '/';
       } else {
         throw new Error(data.message || '로그인 실패');
       }

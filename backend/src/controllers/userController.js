@@ -28,5 +28,7 @@ export const postLogin = async (req, res) => {
   if (!ok) {
     return res.status(400).json({ error: 'Wrong password' });
   }
+  req.session.loggedIn = true;
+  req.session.user = user;
   return res.status(200).json({ message: 'Log User In!' });
 };

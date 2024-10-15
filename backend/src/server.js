@@ -30,11 +30,12 @@ app.use(
     resave: true, //변경 사항이 없어도 저장
     saveUninitialized: false, //세션 초기화 전에도 저장
     cookie: {
+      maxAge: 180000, // 3분(180,000 밀리초)
       sameSite: 'lax', // 또는 'strict'로 설정
       secure: false, // 로컬 개발 환경에서 HTTPS가 아닌 경우 false
     },
 
-    // store: MongoStore.create({ mongoUrl: 'mongodb://127.0.0.1:27017/scvTube' }),
+    store: MongoStore.create({ mongoUrl: 'mongodb://127.0.0.1:27017/scvTube' }),
   })
 );
 app.use((req, res, next) => {

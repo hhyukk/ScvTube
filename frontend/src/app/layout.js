@@ -6,12 +6,13 @@ import { useState, useEffect } from 'react';
 export default function RootLayout({ children }) {
     const [isMenuOpen, setMenuOpen] = useState(false);
     const [isLoggedIn, setIsLoggedIn] = useState(false);
+    const [searchKeyword, setSearchKeyword] = useState(''); // 검색어 상태 추가
 
     useEffect(() => {
-        const loggedIn = localStorage.getItem('isLoggedIn');
-        if (loggedIn === 'true') {
-            setIsLoggedIn(true);
-        }
+        // const loggedIn = localStorage.getItem('isLoggedIn');
+        // if (loggedIn === 'true') {
+        //     setIsLoggedIn(true);
+        // }
     }, []);
 
     const toggleMenu = () => {
@@ -22,6 +23,14 @@ export default function RootLayout({ children }) {
         setIsLoggedIn(false);
         localStorage.removeItem('isLoggedIn');
         window.location.href = '/login';
+    };
+
+    const handleSearch = () => {
+        if (searchKeyword.trim()) {
+            window.location.href = `/search?keyword=${encodeURIComponent(searchKeyword)}`; // 검색 페이지로 이동
+        } else {
+            alert('검색어를 입력하세요.');
+        }
     };
 
     return (
@@ -35,10 +44,11 @@ export default function RootLayout({ children }) {
                     <div className="search-container">
                         <input
                             type="text"
-                            placeholder="Search videos..."
-                            className="search-input"
+                            placeholder="검색어 입력..."
+                            value={searchKeyword}
+                            onChange={(e) => setSearchKeyword(e.target.value)} // 검색어 상태 업데이트
                         />
-                        <button className="search-button">Search</button>
+                        <button onClick={handleSearch}>검색</button> {/* 검색 버튼 추가 */}
                     </div>
 
                     <div className="hamburger" onClick={toggleMenu}>
@@ -55,7 +65,6 @@ export default function RootLayout({ children }) {
                                 <button onClick={handleLogout}>Logout</button>
                             </>
                         )}
-                        <a href="/search">Search</a>
                         <a href="/upload">Upload Video</a>
                     </div>
                 </nav>

@@ -32,3 +32,10 @@ export const postLogin = async (req, res) => {
   req.session.user = user;
   return res.status(200).json({ message: 'Log User In!' });
 };
+
+export const getSession = async (req, res) => {
+  if (req.session.loggedIn) {
+    return res.status(200).json({ loggedIn: true, user: req.session.user });
+  }
+  return res.status(200).json({ loggedIn: false });
+};

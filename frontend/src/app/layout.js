@@ -42,7 +42,7 @@ export default function RootLayout({ children }) {
       });
 
       setIsLoggedIn(false);
-      window.location.href = '/login'; // 로그아웃 후 로그인 페이지로 이동
+      window.location.href = '/'; // 로그아웃 후 루트 페이지로 이동
     } catch (err) {
       console.error('로그아웃 오류:', err);
     }

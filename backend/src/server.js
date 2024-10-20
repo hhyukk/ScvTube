@@ -38,21 +38,6 @@ app.use(
     store: MongoStore.create({ mongoUrl: 'mongodb://127.0.0.1:27017/scvTube' }),
   })
 );
-app.use((req, res, next) => {
-  req.sessionStore.all((error, sessions) => {
-    console.log(sessions);
-    next();
-  });
-});
-
-app.get('/add-one', (req, res, next) => {
-  if (!req.session.potato) {
-    req.session.potato = 1; // 세션에 potato가 없으면 1로 초기화
-  } else {
-    req.session.potato += 1; // 이미 존재하면 값을 +1
-  }
-  return res.send(`${req.session.id}\nPotato count: ${req.session.potato}`);
-});
 
 app.use(localsMiddleware);
 app.use('/', rootRouter);

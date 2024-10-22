@@ -1,6 +1,8 @@
 import User from '../models/User';
 import bcrypt from 'bcrypt';
 
+const rootPage = 'http://localhost:3000/';
+
 export const postJoin = async (req, res) => {
   const { name, username, email, password, location } = req.body;
   try {
@@ -95,7 +97,7 @@ export const finishGithubLogin = async (req, res) => {
 
     const emailObj = emailData.find((email) => email.primary === true && email.verified === true);
     if (!emailObj) {
-      return res.redirect('http://localhost:3000/login');
+      return res.redirect(`${rootPage}/login`);
     }
     const existingUser = await User.findOne({ email: emailObj.email });
     if (!existingUser) {
@@ -108,13 +110,12 @@ export const finishGithubLogin = async (req, res) => {
         githubId: true,
         location: userData.location,
       });
-    } else {
-      req.session.loggedIn = true;
-      req.session.user = user;
-      return res.redirect('http://localhost:3000');
     }
+    req.session.loggedIn = true;
+    req.session.user = existingUser;
+    return res.redirect(`${rootPage}`);
   } else {
-    return res.redirect('http://localhost:3000/login');
+    return res.redirect(`${rootPage}/login`);
   }
 };
 
@@ -161,11 +162,12 @@ export const finishKakaoLogin = async (req, res) => {
   ).json();
 
   const userInfo = userData.kakao_account;
+  console.log(userInfo);
   const nickname = userInfo.profile.nickname;
   console.log(nickname);
 
   if (!nickname) {
-    return res.redirect('http://localhost:3000/login');
+    return res.redirect(`${rootPage}/login`);
   }
 
   let username = await User.findOne({ username: nickname });
@@ -184,5 +186,16 @@ export const finishKakaoLogin = async (req, res) => {
   }
   req.session.loggedIn = true;
   req.session.user = username;
-  return res.redirect('http://localhost:3000');
+  return res.redirect(`${rootPage}`);
+};
+
+export const logout = (req, res) => {
+  req.session.destroy((err) => {
+    if (err) {
+      console.error('세션 제거 중 오류:', err);
+      return res.status(500).json({ error: '서버 오류' });
+    }
+    // 로그아웃 후 클라이언트에게 성공 응답
+    return res.status(200).json({ message: '로그아웃 성공' });
+  });
 };

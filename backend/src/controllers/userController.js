@@ -98,11 +98,7 @@ export const finishGithubLogin = async (req, res) => {
       return res.redirect('http://localhost:3000/login');
     }
     const existingUser = await User.findOne({ email: emailObj.email });
-    if (existingUser) {
-      req.session.loggedIn = true;
-      req.session.user = existingUser;
-      return res.redirect('http://localhost:3000');
-    } else {
+    if (!existingUser) {
       // 기존 사용자가 없으면 새 사용자 생성
       const user = await User.create({
         name: userData.name,
@@ -112,6 +108,7 @@ export const finishGithubLogin = async (req, res) => {
         githubId: true,
         location: userData.location,
       });
+    } else {
       req.session.loggedIn = true;
       req.session.user = user;
       return res.redirect('http://localhost:3000');
@@ -119,4 +116,73 @@ export const finishGithubLogin = async (req, res) => {
   } else {
     return res.redirect('http://localhost:3000/login');
   }
+};
+
+export const startKakaoLogin = (req, res) => {
+  const baseUrl = 'https://kauth.kakao.com/oauth/authorize';
+  const config = {
+    client_id: process.env.KO_CLIENT,
+    redirect_uri: process.env.KO_REDIRECT_URL,
+    response_type: 'code',
+    scope: 'profile_nickname',
+  };
+  const optionUrl = new URLSearchParams(config).toString();
+  const finalUrl = `${baseUrl}?${optionUrl}`;
+  return res.redirect(finalUrl);
+};
+
+export const finishKakaoLogin = async (req, res) => {
+  const baseUrl = 'https://kauth.kakao.com/oauth/token';
+  const config = {
+    grant_type: 'authorization_code',
+    client_id: process.env.KO_CLIENT,
+    redirect_uri: process.env.KO_REDIRECT_URL,
+    code: req.query.code,
+  };
+  const optionUrl = new URLSearchParams(config).toString();
+  const finalUrl = `${baseUrl}?${optionUrl}`;
+
+  const accessToken = await (
+    await fetch(finalUrl, {
+      method: 'POST',
+      headers: {
+        'Content-type': 'application/x-www-form-urlencoded;charset=utf-8',
+      },
+    })
+  ).json();
+
+  const userData = await (
+    await fetch('https://kapi.kakao.com/v2/user/me', {
+      method: 'GET',
+      headers: {
+        Authorization: `Bearer ${accessToken.access_token}`,
+      },
+    })
+  ).json();
+
+  const userInfo = userData.kakao_account;
+  const nickname = userInfo.profile.nickname;
+  console.log(nickname);
+
+  if (!nickname) {
+    return res.redirect('http://localhost:3000/login');
+  }
+
+  let username = await User.findOne({ username: nickname });
+
+  if (!username) {
+    const user = await User.create({
+      name: nickname,
+      avatarUrl: userInfo.profile.profile_image_url,
+      username: nickname,
+      email: 'aaa@aaa',
+      password: '',
+      githubId: false,
+      kakaoId: true,
+      location: '',
+    });
+  }
+  req.session.loggedIn = true;
+  req.session.user = username;
+  return res.redirect('http://localhost:3000');
 };

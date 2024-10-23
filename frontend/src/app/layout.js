@@ -61,7 +61,7 @@ export default function RootLayout({ children }) {
       <body>
         <nav className={`nav ${isMenuOpen ? 'open' : ''}`}>
           <div className="logo">
-            <a href="/">Wetube</a>
+            <a href="/">ESCtube</a>
           </div>
 
           <div className="search-container">

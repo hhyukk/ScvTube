@@ -39,6 +39,7 @@ export const postDelete = async (req, res) => {
 export const postEdit = async (req, res) => {
   const { id } = req.params;
   const { title, description, hashtags } = req.body;
+  console.log(hashtags);
   try {
     const video = await Video.exists({ _id: id });
     if (!video) {
@@ -47,7 +48,7 @@ export const postEdit = async (req, res) => {
     await Video.findByIdAndUpdate(id, {
       title,
       description,
-      hashtags,
+      hashtags: Video.formatHashtags(hashtags),
     });
     console.log(hashtags);
     return res.status(200).json({ message: 'Edit successful' }); // JSON 응답

@@ -67,15 +67,17 @@ export default function LoginPage() {
         </div>
 
         {error && <p className="error-message">{error}</p>}
-        <button type="submit" className="login-button" disabled={loading}>
-          {loading ? '로딩 중...' : '로그인'}
-        </button>
-        <button type="button" onClick={() => (window.location.href = 'http://localhost:4000/users/github/start')}>
-          깃허브 로그인
-        </button>
-        <button type="button" onClick={() => (window.location.href = 'http://localhost:4000/users/kakao/start')}>
-          카카오 로그인
-        </button>
+        <div className='buttons'>
+          <button type="submit" className="login-button" disabled={loading}>
+            {loading ? '로딩 중...' : '로그인'}
+          </button>
+          <button type="button" className="github-login-button" onClick={() => (window.location.href = 'http://localhost:4000/users/github/start')}>
+            GitHub 계정으로 로그인
+          </button>
+          <button type="button" className="kakao-login-button" onClick={() => (window.location.href = 'http://localhost:4000/users/kakao/start')}>
+            KAKAO 계정으로 로그인
+          </button>
+        </div>
       </form>
     </div>
   );

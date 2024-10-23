@@ -5,8 +5,9 @@
 }
 
 body {
-  font-family: Arial, sans-serif;
-  background-color: #f4f4f4;
+  font-family: 'Courier New', Courier, monospace;
+  font-weight: bold;
+  background-color: white;
   margin: 0;
   padding: 0;
   color: #333;
@@ -21,40 +22,46 @@ nav {
   flex-wrap: wrap;
 }
 
-nav .logo {
+nav .logo a {
   font-size: 24px;
   font-weight: bold;
   color: #E46A00;
-  text-decoration: none;
+  text-decoration: none; /* 밑줄 제거 */
 }
 
+/* 검색창 css */
 .search-container {
   display: flex;
   justify-content: center;
   align-items: center;
   flex-grow: 1;
-  max-width: 500px;
+  max-width: 550px;
+  padding: 5px;
+  border-radius: 30px;
 }
 
 .search-input {
   width: 100%;
-  padding: 5px 10px;
-  border-radius: 4px;
-  border: 1px solid #ccc;
+  padding: 10px 15px;
+  border: none;
+  border-top-left-radius: 30px;
+  border-bottom-left-radius: 30px;
+  outline: none;
 }
 
 .search-button {
-  background-color: #005bb5;
+  background-color: #FFB366;
+  width: 36px;
+  height: 36px;
   color: white;
   border: none;
-  padding: 5px 10px;
-  margin-left: 5px;
-  border-radius: 4px;
+  border-top-right-radius: 30px;
+  border-bottom-right-radius: 30px;
   cursor: pointer;
 }
 
 .search-button:hover {
-  background-color: #003f8a;
+  background-color: #ff9933;
 }
 
 .hamburger {
@@ -114,7 +121,7 @@ nav .logo {
 h1 {
   text-align: center;
   margin-bottom: 20px;
-  color: #A94900;
+  color: #F99B49;
 }
 
 .input-group {
@@ -140,7 +147,7 @@ h1 {
 .upload-button {
   width: 100%;
   padding: 10px;
-  background-color: #0070f3;
+  background-color: #F99B49;
   color: white;
   border: none;
   border-radius: 5px;
@@ -150,7 +157,7 @@ h1 {
 }
 
 .upload-button:hover {
-  background-color: #005bb5;
+  background-color: #FF7700;
 }
 
 /* 업로드된 비디오 리스트 스타일 */
@@ -190,7 +197,7 @@ li p {
   max-width: 400px;
   margin: 100px auto;
   padding: 20px;
-  background-color: #f9f9f9;
+  background-color: white;
   border-radius: 10px;
   box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
 }
@@ -212,18 +219,52 @@ li p {
   border-radius: 5px;
 }
 
+.buttons {
+  display: flex;
+  flex-direction: column;
+  gap: 1px;
+  align-items: center;
+}
+
+.login-button, .github-login-button, .kakao-login-button {
+  width: 100%;
+  padding: 10px;
+  border-radius: 5px;
+  cursor: pointer;
+}
+
 .login-button {
   width: 100%;
   padding: 10px;
-  background-color: #007BFF;
-  color: white;
+  background-color: #F99B49;
+  color: #FFFFE5;
   border: none;
   border-radius: 5px;
   cursor: pointer;
 }
 
 .login-button:hover {
-  background-color: #0056b3;
+  background-color: #FF7700;
+}
+
+.github-login-button {
+  width: 100%;
+  padding: 10px;
+  background-color: black;
+  color: #FFFFE5;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+}
+
+.kakao-login-button {
+  width: 100%;
+  padding: 10px;
+  background-color: #f7e600;
+  color: black;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
 }
 
 
@@ -232,7 +273,7 @@ li p {
   max-width: 400px;
   margin: 15px auto;
   padding: 20px;
-  background-color: #f9f9f9;
+  background-color: white;
   border-radius: 10px;
   box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
 }
@@ -257,13 +298,38 @@ li p {
 .signup-button {
   width: 100%;
   padding: 10px;
-  background-color: #007BFF;
-  color: white;
+  background-color: #F99B49;
+  color: #FFFFE5;
   border: none;
   border-radius: 5px;
   cursor: pointer;
 }
 
 .signup-button:hover {
-  background-color: #0056b3;
+  background-color: #FF7700;
+}
+
+.fade-enter {
+  opacity: 0;
+  transform: translateY(-20px);
+}
+.fade-enter-active {
+  opacity: 1;
+  transform: translateY(0);
+  transition: opacity 300ms, transform 300ms;
+}
+.fade-exit {
+  opacity: 1;
+  transform: translateY(0);
+}
+.fade-exit-active {
+  opacity: 0;
+  transform: translateY(-20px);
+  transition: opacity 300ms, transform 300ms;
+}
+
+.redirecting-message {
+  margin-bottom: 16px;
+  color: green;
+  font-weight: bold;
 }

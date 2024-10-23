@@ -24,7 +24,7 @@ export default function HomePage() {
 
   return (
     <div className="home-container">
-      <h1>당신의 동영상을 업로드 해보세요!!!</h1>
+      <h1>당신의 동영상을 업로드 해보세요!</h1>
       <div className="video-list">
         {videoList.length > 0 ? (
           <ul>

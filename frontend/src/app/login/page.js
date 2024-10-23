@@ -73,6 +73,9 @@ export default function LoginPage() {
         <button type="button" onClick={() => (window.location.href = 'http://localhost:4000/users/github/start')}>
           깃허브 로그인
         </button>
+        <button type="button" onClick={() => (window.location.href = 'http://localhost:4000/users/kakao/start')}>
+          카카오 로그인
+        </button>
       </form>
     </div>
   );

@@ -229,3 +229,23 @@ export const postEdit = async (req, res) => {
   req.session.user = updatedUser;
   return res.status(200).send('Ok');
 };
+
+export const postChangePassword = async (req, res) => {
+  const {
+    session: {
+      user: { _id },
+    },
+    body: { oldPassword, newPassword, newPasswordConfirmation },
+  } = req;
+  const user = await User.findById(_id); // 로그아웃 없이 비밀번호 변경하는 경우 필요
+  const ok = await bcrypt.compare(oldPassword, user.password);
+  if (!ok) {
+    return res.status(400).send('Error');
+  }
+  if (newPassword !== newPasswordConfirmation) {
+    return res.status(400).send('Error');
+  }
+  user.password = newPassword;
+  await user.save();
+  return res.status(200).send('Ok');
+};

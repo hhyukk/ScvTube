@@ -3,6 +3,7 @@ import {
   finishGithubLogin,
   finishKakaoLogin,
   logout,
+  postChangePassword,
   postEdit,
   startGithubLogin,
   startKakaoLogin,
@@ -16,5 +17,6 @@ userRouter.get('/github/finish', finishGithubLogin);
 userRouter.get('/kakao/finish', finishKakaoLogin);
 userRouter.post('/logout', logout);
 userRouter.post('/edit', postEdit);
+userRouter.post('/change-password', postChangePassword);
 
 export default userRouter;

@@ -3,19 +3,24 @@
 import { useEffect, useState } from 'react';
 
 export default function VideoPage({ params }) {
-  const { id } = params; // 동적 라우팅에서 id 가져오기
-  const [video, setVideo] = useState({ title: '', description: '', hashtags: [] }); // 초기값 설정
-  const [isEditing, setIsEditing] = useState(false); // 수정 모드 상태
+  const { id } = params;
+  const [video, setVideo] = useState({ title: '', description: '', hashtags: '', createdAt: '' }); // createdAt 추가
+  const [originalVideo, setOriginalVideo] = useState(null);
+  const [isEditing, setIsEditing] = useState(false);
 
   useEffect(() => {
     const fetchVideo = async () => {
       try {
-        const response = await fetch(`http://localhost:4000/videos/${id}`); // API 호출
+        const response = await fetch(`http://localhost:4000/videos/${id}`);
         if (!response.ok) {
           throw new Error('비디오를 불러오는 데 실패했습니다.');
         }
         const data = await response.json();
-        setVideo(data); // 비디오 데이터 설정
+        setVideo({
+          ...data,
+          hashtags: data.hashtags.join(', '), // 배열을 쉼표로 구분된 문자열로 변환
+        });
+        setOriginalVideo(data);
       } catch (error) {
         console.error('Error fetching video:', error);
         alert('비디오를 불러오는 데 실패했습니다.');
@@ -23,21 +28,35 @@ export default function VideoPage({ params }) {
     };
 
     fetchVideo();
-  }, [id]); // ID가 변경될 때마다 호출
+  }, [id]);
+
+  // 시간을 "시:분:초" 형식으로 변환하는 함수
+  const formatTime = (dateString) => {
+    const date = new Date(dateString);
+    const hours = String(date.getHours()).padStart(2, '0');
+    const minutes = String(date.getMinutes()).padStart(2, '0');
+    const seconds = String(date.getSeconds()).padStart(2, '0');
+    return `${hours}:${minutes}:${seconds}`; // 시간 포맷팅
+  };
 
   const handleEdit = async () => {
     try {
+      const updatedVideo = {
+        ...video,
+        hashtags: video.hashtags.split(',').map(tag => tag.trim()), // 쉼표로 구분된 태그를 배열로 변환
+      };
+
       const response = await fetch(`http://localhost:4000/videos/${id}/edit`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
         },
-        body: JSON.stringify(video), // 수정된 비디오 데이터 서버로 전송
+        body: JSON.stringify(updatedVideo),
       });
 
       if (response.ok) {
         alert('수정이 완료되었습니다.');
-        window.location.href = '/'; // 수정 완료 후 홈으로 리디렉션
+        window.location.href = '/';
       } else {
         alert('수정에 실패했습니다.');
       }
@@ -58,7 +77,7 @@ export default function VideoPage({ params }) {
 
       if (response.ok) {
         alert('삭제가 완료되었습니다.');
-        window.location.href = '/'; // 삭제 후 홈으로 리디렉션
+        window.location.href = '/';
       } else {
         alert('삭제에 실패했습니다.');
       }
@@ -66,6 +85,14 @@ export default function VideoPage({ params }) {
       console.error('Error deleting video:', error);
       alert('삭제 중 오류가 발생했습니다.');
     }
+  };
+
+  const handleCancel = () => {
+    setVideo({
+      ...originalVideo,
+      hashtags: originalVideo.hashtags.join(', '), // 수정 취소 시 원래 배열을 쉼표로 구분된 문자열로 복원
+    });
+    setIsEditing(false); // 수정 모드 취소
   };
 
   return (
@@ -76,8 +103,9 @@ export default function VideoPage({ params }) {
         <div>
           <p><strong>제목:</strong> {video.title}</p>
           <p><strong>설명:</strong> {video.description}</p>
-          <p><strong>태그:</strong> {Array.isArray(video.hashtags) ? video.hashtags.join(', ') : video.hashtags}</p> {/* 배열인지 확인 */}
-          <button onClick={() => setIsEditing(true)}>수정</button> {/* 수정 모드로 전환 */}
+          <p><strong>태그:</strong> {video.hashtags}</p>
+          <p><strong>업로드 시간:</strong> {formatTime(video.createdAt)}</p> {/* 업로드 시간 표시 */}
+          <button onClick={() => setIsEditing(true)}>수정</button>
           <button onClick={handleDelete}>삭제</button>
         </div>
       ) : (
@@ -105,12 +133,13 @@ export default function VideoPage({ params }) {
             <input
               type="text"
               id="tags"
-              value={video.hashtags.join(', ')} // 태그를 문자열로 표시
-              onChange={(e) => setVideo({ ...video, hashtags: e.target.value.split(',').map(tag => tag.trim()) })} // 문자열을 배열로 변환
+              value={video.hashtags}
+              onChange={(e) => setVideo({ ...video, hashtags: e.target.value })}
+              placeholder="쉼표로 태그를 구분하세요"
             />
           </div>
-          <button onClick={handleEdit}>저장</button> {/* 수정 사항 저장 */}
-          <button onClick={() => setIsEditing(false)}>취소</button> {/* 수정 모드 취소 */}
+          <button onClick={handleEdit}>저장</button>
+          <button onClick={handleCancel}>취소</button>
         </div>
       )}
     </div>

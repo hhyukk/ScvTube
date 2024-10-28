@@ -2,6 +2,7 @@
 
 import { useState } from 'react';
 import { CSSTransition } from 'react-transition-group';
+import useCheckSession from '../session';
 
 export default function SignupPage() {
     const [name, setName] = useState('');
@@ -20,6 +21,7 @@ export default function SignupPage() {
         setLoading(true);
         setError(null);
         setSuccessMessage('');
+        useCheckSession();
 
         if (password !== password2) {
             setError('비밀번호가 일치하지 않습니다.');

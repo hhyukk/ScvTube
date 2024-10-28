@@ -4,9 +4,15 @@ import { useEffect, useState } from 'react';
 
 export default function VideoPage({ params }) {
   const { id } = params;
-  const [video, setVideo] = useState({ title: '', description: '', hashtags: '', createdAt: '' }); // createdAt 추가
-  const [originalVideo, setOriginalVideo] = useState(null);
+  const [video, setVideo] = useState({
+    title: '',
+    description: '',
+    hashtags: [],
+    createdAt: '',
+  });
+  const [originalVideo, setOriginalVideo] = useState(null); // 원본 비디오 데이터 저장
   const [isEditing, setIsEditing] = useState(false);
+  const [loading, setLoading] = useState(true); // 로딩 상태 추가
 
   useEffect(() => {
     const fetchVideo = async () => {
@@ -18,32 +24,27 @@ export default function VideoPage({ params }) {
         const data = await response.json();
         setVideo({
           ...data,
-          hashtags: data.hashtags.join(', '), // 배열을 쉼표로 구분된 문자열로 변환
+          hashtags: Array.isArray(data.hashtags) ? data.hashtags.join(', ') : data.hashtags,
         });
-        setOriginalVideo(data);
+        setOriginalVideo(data); // 원본 데이터 저장
       } catch (error) {
         console.error('Error fetching video:', error);
         alert('비디오를 불러오는 데 실패했습니다.');
+      } finally {
+        setLoading(false);
       }
     };
 
-    fetchVideo();
+    if (id) {
+      fetchVideo();
+    }
   }, [id]);
-
-  // 시간을 "시:분:초" 형식으로 변환하는 함수
-  const formatTime = (dateString) => {
-    const date = new Date(dateString);
-    const hours = String(date.getHours()).padStart(2, '0');
-    const minutes = String(date.getMinutes()).padStart(2, '0');
-    const seconds = String(date.getSeconds()).padStart(2, '0');
-    return `${hours}:${minutes}:${seconds}`; // 시간 포맷팅
-  };
 
   const handleEdit = async () => {
     try {
       const updatedVideo = {
         ...video,
-        hashtags: video.hashtags.split(',').map(tag => tag.trim()), // 쉼표로 구분된 태그를 배열로 변환
+        hashtags: video.hashtags.split(',').map(tag => tag.trim()),
       };
 
       const response = await fetch(`http://localhost:4000/videos/${id}/edit`, {
@@ -89,11 +90,27 @@ export default function VideoPage({ params }) {
 
   const handleCancel = () => {
     setVideo({
-      ...originalVideo,
-      hashtags: originalVideo.hashtags.join(', '), // 수정 취소 시 원래 배열을 쉼표로 구분된 문자열로 복원
+      title: originalVideo.title, // 원본 제목
+      description: originalVideo.description, // 원본 설명
+      hashtags: Array.isArray(originalVideo.hashtags) ? originalVideo.hashtags.join(', ') : originalVideo.hashtags, // 원본 해시태그
+      createdAt: originalVideo.createdAt, // 원본 업로드 시간
     });
-    setIsEditing(false); // 수정 모드 취소
+    setIsEditing(false); // 수정 모드 해제
   };
+
+  const formatUploadTime = (dateString) => {
+    const date = new Date(dateString);
+    const year = date.getFullYear();
+    const month = String(date.getMonth() + 1).padStart(2, '0');
+    const day = String(date.getDate()).padStart(2, '0');
+    const hours = String(date.getHours()).padStart(2, '0');
+    const minutes = String(date.getMinutes()).padStart(2, '0');
+    return `${year}년 ${month}월 ${day}일 ${hours}:${minutes}`; // 포맷: YYYY년 MM월 DD일 HH:MM
+  };
+
+  if (loading) {
+    return <p>비디오를 불러오는 중입니다...</p>; // 로딩 상태 처리
+  }
 
   return (
     <div className="video-container">
@@ -104,7 +121,7 @@ export default function VideoPage({ params }) {
           <p><strong>제목:</strong> {video.title}</p>
           <p><strong>설명:</strong> {video.description}</p>
           <p><strong>태그:</strong> {video.hashtags}</p>
-          <p><strong>업로드 시간:</strong> {formatTime(video.createdAt)}</p> {/* 업로드 시간 표시 */}
+          <p><strong>업로드 시간:</strong> {formatUploadTime(video.createdAt)}</p> {/* 업로드 시간 포맷 */}
           <button onClick={() => setIsEditing(true)}>수정</button>
           <button onClick={handleDelete}>삭제</button>
         </div>

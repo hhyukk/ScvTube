@@ -333,3 +333,60 @@ li p {
   color: green;
   font-weight: bold;
 }
+
+/* 프로필 수정 페이지 스타일 */
+.profile-edit-container {
+  background-color: white;
+  padding: 20px;
+  max-width: 400px;
+  margin: 50px auto;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  border-radius: 10px;
+}
+
+.profile-edit-container h1 {
+  text-align: center;
+  margin-bottom: 20px;
+  color: #F99B49;
+}
+
+.input-group {
+  margin-bottom: 15px;
+}
+
+.input-group label {
+  display: block;
+  font-size: 14px;
+  margin-bottom: 5px;
+  color: #333;
+}
+
+.input-group input[type="text"],
+.input-group input[type="email"] {
+  width: 100%;
+  padding: 10px;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  font-size: 16px;
+}
+
+.input-group input[type="text"]:focus,
+.input-group input[type="email"]:focus {
+  border-color: #F99B49;
+}
+
+.submit-button {
+  width: 100%;
+  padding: 10px;
+  background-color: #F99B49;
+  color: white;
+  border: none;
+  border-radius: 5px;
+  font-size: 16px;
+  cursor: pointer;
+  margin-top: 15px;
+}
+
+.submit-button:hover {
+  background-color: #FF7700;
+}

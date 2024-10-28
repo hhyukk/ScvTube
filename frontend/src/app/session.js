@@ -12,8 +12,8 @@ const useCheckSession = () => {
       });
       const data = await response.json();
 
-      if (data.loggedIn) {
-        router.push('/');
+      if (!data.loggedIn) {
+        router.push('/'); // 로그인하지 않은 경우 홈으로 리디렉션
       }
     };
 

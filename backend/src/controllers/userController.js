@@ -190,12 +190,42 @@ export const finishKakaoLogin = async (req, res) => {
 };
 
 export const logout = (req, res) => {
+  // 세션을 파괴하고 req.session속성 설정 해제
   req.session.destroy((err) => {
     if (err) {
       console.error('세션 제거 중 오류:', err);
       return res.status(500).json({ error: '서버 오류' });
     }
-    // 로그아웃 후 클라이언트에게 성공 응답
     return res.status(200).json({ message: '로그아웃 성공' });
   });
+};
+
+export const postEdit = async (req, res) => {
+  const {
+    session: {
+      user: { _id, email: sessionEmail, username: sessionUserName },
+    },
+    body: { name, email, username, location },
+  } = req;
+
+  if (sessionEmail == email || sessionUserName == username) {
+    return res.status(400).send('Error');
+  }
+
+  if (await User.exists({ $or: [{ username }, { email }] })) {
+    return res.status(400).json({ errorMessage: 'username or email is exists!!' });
+  }
+
+  const updatedUser = await User.findByIdAndUpdate(
+    _id,
+    {
+      name,
+      email,
+      username,
+      location,
+    },
+    { new: true }
+  );
+  req.session.user = updatedUser;
+  return res.status(200).send('Ok');
 };

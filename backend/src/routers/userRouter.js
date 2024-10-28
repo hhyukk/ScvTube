@@ -3,6 +3,7 @@ import {
   finishGithubLogin,
   finishKakaoLogin,
   logout,
+  postEdit,
   startGithubLogin,
   startKakaoLogin,
 } from '../controllers/userController';
@@ -14,5 +15,6 @@ userRouter.get('/kakao/start', startKakaoLogin);
 userRouter.get('/github/finish', finishGithubLogin);
 userRouter.get('/kakao/finish', finishKakaoLogin);
 userRouter.post('/logout', logout);
+userRouter.post('/edit', postEdit);
 
 export default userRouter;

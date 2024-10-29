@@ -390,3 +390,66 @@ li p {
 .submit-button:hover {
   background-color: #FF7700;
 }
+
+/* 프로필 수정페이지 css */
+.edit-profile {
+  max-width: 500px;
+  margin: 2rem auto;
+  padding: 2rem;
+  background-color: #ffffff;
+  border-radius: 8px;
+  box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1);
+  font-family: Arial, sans-serif;
+}
+
+.edit-profile h2 {
+  font-size: 1.8rem;
+  color: #F99B49;
+  margin-bottom: 1.5rem;
+  text-align: center;
+}
+
+.edit-profile form {
+  display: flex;
+  flex-direction: column;
+}
+
+.edit-profile label {
+  font-size: 1rem;
+  color: #555555;
+  margin-bottom: 0.1rem;
+  margin-top: 0.1rem; /* 라벨과 인풋 사이 간격 조정 */
+}
+
+.edit-profile input[type="text"],
+.edit-profile input[type="email"] {
+  width: 100%; /* 인풋 박스가 컨테이너 너비에 맞도록 설정 */
+  padding: 0.75rem;
+  font-size: 1rem;
+  border-radius: 4px;
+  border: 1px solid #cccccc;
+  margin-bottom: 1.2rem;
+  transition: border-color 0.3s ease;
+}
+
+.edit-profile input[type="text"]:focus,
+.edit-profile input[type="email"]:focus {
+  border-color: #333333;
+  outline: none;
+}
+
+.edit-profile button {
+  padding: 0.75rem 1.5rem;
+  font-size: 1rem;
+  color: #ffffff;
+  background-color: #F99B43;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+  margin-top: 1rem;
+}
+
+.edit-profile button:hover {
+  background-color: #FF7700;
+}

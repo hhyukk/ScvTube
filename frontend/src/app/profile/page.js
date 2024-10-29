@@ -1,77 +1,118 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 
-export default function ProfileEdit() {
-  const [profile, setProfile] = useState({
+export default function EditProfile() {
+  const [formData, setFormData] = useState({
     name: '',
     email: '',
     username: '',
     location: '',
   });
 
-  const handleChange = (e) => {
-    const { name, value } = e.target;
-    setProfile((prevProfile) => ({
-      ...prevProfile,
+  useEffect(() => {
+    // 초기 정보 불러오기
+    const fetchProfileData = async () => {
+      try {
+        const response = await fetch('http://localhost:4000/session', {
+          method: 'GET',
+          credentials: 'include',
+        });
+        const data = await response.json();
+
+        // 현재 정보를 placeholder로 설정
+        if (data.loggedIn && data.user) {
+          setFormData({
+            name: data.user.name,
+            email: data.user.email,
+            username: data.user.username,
+            location: data.user.location,
+          });
+        }
+      } catch (error) {
+        console.error('프로필 정보를 가져오는 중 오류:', error);
+      }
+    };
+
+    fetchProfileData();
+  }, []);
+
+  // 입력 값 변경 핸들러
+  const handleInputChange = (event) => {
+    const { name, value } = event.target;
+    setFormData((prevData) => ({
+      ...prevData,
       [name]: value,
     }));
   };
 
-  const handleSubmit = (e) => {
-    e.preventDefault();
-    // 여기에 API 호출 로직 추가 예정
-    alert('프로필 수정이 완료되었습니다.');
+  // 프로필 업데이트 함수
+  const handleUpdateProfile = async () => {
+    try {
+      const response = await fetch('http://localhost:4000/users/edit', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        credentials: 'include',
+        body: JSON.stringify(formData),
+      });
+
+      if (response.ok) {
+        alert('프로필이 업데이트되었습니다.');
+      } else {
+        console.error('프로필 업데이트 실패');
+      }
+    } catch (error) {
+      console.error('프로필 업데이트 중 오류:', error);
+    }
   };
 
   return (
-    <div className="profile-edit-container">
-      <h1>프로필 수정</h1>
-      <form onSubmit={handleSubmit}>
-        <div className="input-group">
-          <label htmlFor="name">이름</label>
+    <div className="edit-profile">
+      <h2>프로필 수정</h2>
+      <form onSubmit={(e) => e.preventDefault()}>
+        <label>
+          이름
           <input
             type="text"
-            id="name"
             name="name"
-            value={profile.name}
-            onChange={handleChange}
-            required
+            placeholder={formData.name}
+            value={formData.name}
+            onChange={handleInputChange}
           />
-        </div>
-        <div className="input-group">
-          <label htmlFor="email">이메일</label>
+        </label>
+        <label>
+          이메일
           <input
             type="email"
-            id="email"
             name="email"
-            value={profile.email}
-            onChange={handleChange}
-            required
+            placeholder={formData.email}
+            value={formData.email}
+            onChange={handleInputChange}
           />
-        </div>
-        <div className="input-group">
-          <label htmlFor="username">사용자 이름</label>
+        </label>
+        <label>
+          유저네임
           <input
             type="text"
-            id="username"
             name="username"
-            value={profile.username}
-            onChange={handleChange}
-            required
+            placeholder={formData.username}
+            value={formData.username}
+            onChange={handleInputChange}
           />
-        </div>
-        <div className="input-group">
-          <label htmlFor="location">위치</label>
+        </label>
+        <label>
+          지역
           <input
             type="text"
-            id="location"
             name="location"
-            value={profile.location}
-            onChange={handleChange}
+            placeholder={formData.location}
+            value={formData.location}
+            onChange={handleInputChange}
           />
-        </div>
-        <button type="submit">수정하기</button>
+        </label>
+        <button type="button" onClick={handleUpdateProfile}>
+          수정하기
+        </button>
       </form>
     </div>
   );

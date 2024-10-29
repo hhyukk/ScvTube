@@ -208,12 +208,11 @@ export const postEdit = async (req, res) => {
     body: { name, email, username, location },
   } = req;
 
-  if (sessionEmail == email || sessionUserName == username) {
-    return res.status(400).send('Error');
-  }
-
   if (await User.exists({ $or: [{ username }, { email }] })) {
-    return res.status(400).json({ errorMessage: 'username or email is exists!!' });
+    if (sessionEmail === email || sessionUserName === username) {
+    } else {
+      return res.status(400).json({ errorMessage: 'username or email already exists!' });
+    }
   }
 
   const updatedUser = await User.findByIdAndUpdate(

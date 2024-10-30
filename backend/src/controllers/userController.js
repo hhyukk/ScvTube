@@ -203,21 +203,28 @@ export const logout = (req, res) => {
 export const postEdit = async (req, res) => {
   const {
     session: {
-      user: { _id, email: sessionEmail, username: sessionUserName },
+      user: { _id, avatarUrl, email: sessionEmail, username: sessionUserName },
     },
     body: { name, email, username, location },
+    file,
   } = req;
 
+  console.log('file.path:', file ? file.path : 'no file uploaded');
+
+  // 중복 확인 후 세션의 값과 동일한지 검토
   if (await User.exists({ $or: [{ username }, { email }] })) {
     if (sessionEmail === email || sessionUserName === username) {
+      // 동일하면 계속 진행
     } else {
       return res.status(400).json({ errorMessage: 'username or email already exists!' });
     }
   }
 
+  // 업데이트된 사용자 정보 저장
   const updatedUser = await User.findByIdAndUpdate(
     _id,
     {
+      avatarUrl: file ? file.path : avatarUrl,
       name,
       email,
       username,
@@ -225,8 +232,17 @@ export const postEdit = async (req, res) => {
     },
     { new: true }
   );
+
+  // 세션의 user 객체 업데이트 후 저장
   req.session.user = updatedUser;
-  return res.status(200).send('Ok');
+  req.session.save((err) => {
+    if (err) {
+      console.error('세션 저장 오류:', err);
+      return res.status(500).json({ errorMessage: '세션 저장 중 오류가 발생했습니다.' });
+    }
+    console.log('session값: ', req.session.user);
+    return res.status(200).send('Ok');
+  });
 };
 
 export const postChangePassword = async (req, res) => {

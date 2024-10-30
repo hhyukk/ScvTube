@@ -9,6 +9,7 @@
     "connect-mongo": "^5.1.0",
     "dotenv": "^16.4.5",
     "express-session": "^1.18.1",
+    "multer": "^1.4.5-lts.1",
     "react-router-dom": "^6.27.0",
     "react-transition-group": "^4.4.5"
   }

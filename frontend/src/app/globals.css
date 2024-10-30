@@ -417,13 +417,13 @@ li p {
 .edit-profile label {
   font-size: 1rem;
   color: #555555;
-  margin-bottom: 0.1rem;
-  margin-top: 0.1rem; /* 라벨과 인풋 사이 간격 조정 */
+  margin-bottom: 0.5rem;
 }
 
 .edit-profile input[type="text"],
-.edit-profile input[type="email"] {
-  width: 100%; /* 인풋 박스가 컨테이너 너비에 맞도록 설정 */
+.edit-profile input[type="email"],
+.edit-profile input[type="password"] {
+  width: 100%;
   padding: 0.75rem;
   font-size: 1rem;
   border-radius: 4px;
@@ -433,9 +433,21 @@ li p {
 }
 
 .edit-profile input[type="text"]:focus,
-.edit-profile input[type="email"]:focus {
+.edit-profile input[type="email"]:focus,
+.edit-profile input[type="password"]:focus {
   border-color: #333333;
   outline: none;
+}
+
+.edit-profile .password-section {
+  display: flex;
+  align-items: center;
+  margin-bottom: 1.2rem;
+}
+
+.edit-profile .password-section input {
+  flex: 1;
+  margin-right: 0.5rem;
 }
 
 .edit-profile button {
@@ -453,3 +465,33 @@ li p {
 .edit-profile button:hover {
   background-color: #FF7700;
 }
+
+.edit-profile .change-password-button {
+  font-size: 0.9rem;
+  color: #F99B49;
+  background: none;
+  border: none;
+  cursor: pointer;
+  margin-left: 0.5rem;
+}
+
+.edit-profile .change-password-button:hover {
+  color: #FF7700;
+}
+
+.edit-profile .cancel-button {
+  padding: 0.75rem 1.5rem;
+  font-size: 1rem;
+  color: #ffffff;
+  background-color: #F99B49;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+  margin-top: 1rem;
+}
+
+.edit-profile .cancel-button:hover {
+  background-color: #FF7700;
+}
+

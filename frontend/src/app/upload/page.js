@@ -45,7 +45,7 @@ export default function UploadPage() {
 
   return (
     <div className="upload-container">
-      <h1>당신의 영상을 업로드하세요!</h1>
+      <h1>영상 업로드</h1>
       <div className="input-group">
         <label htmlFor="title">제목</label>
         <input

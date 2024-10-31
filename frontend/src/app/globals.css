@@ -495,3 +495,24 @@ li p {
   background-color: #FF7700;
 }
 
+.profile-image-container {
+  display: flex;
+  justify-content: center;
+  margin-bottom: 1rem;
+}
+
+.profile-preview {
+  width: 100px;
+  height: 100px;
+  border-radius: 50%; /* 원형 이미지 */
+  object-fit: cover;
+  cursor: pointer; /* 클릭 가능 표시 */
+}
+
+.password-field {
+  margin-top: 1rem;
+}
+
+.save-button {
+  margin-top: 1rem;
+}

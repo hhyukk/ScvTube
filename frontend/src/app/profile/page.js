@@ -1,8 +1,10 @@
 'use client';
 
 import { useState, useEffect } from 'react';
+import { useRouter } from 'next/navigation';
 
 export default function EditProfile() {
+  const router = useRouter();
   const [formData, setFormData] = useState({
     name: '',
     email: '',
@@ -10,16 +12,16 @@ export default function EditProfile() {
     location: '',
     avatarUrl: '',
   });
+  const [avatarFile, setAvatarFile] = useState(null);
+  const [previewUrl, setPreviewUrl] = useState('');
   const [isEditingPassword, setIsEditingPassword] = useState(false);
   const [passwordData, setPasswordData] = useState({
     oldPassword: '',
     newPassword: '',
     newPasswordConfirmation: '',
   });
-  const [sessionPassword, setSessionPassword] = useState(''); // 세션에서 가져온 비밀번호 저장
 
   useEffect(() => {
-    // 초기 정보 불러오기
     const fetchProfileData = async () => {
       try {
         const response = await fetch('http://localhost:4000/session', {
@@ -34,9 +36,9 @@ export default function EditProfile() {
             email: data.user.email,
             username: data.user.username,
             location: data.user.location,
-            avatarUrl: data.user.avatarUrl || '',
+            avatarUrl: data.user.avatarUrl,
           });
-          setSessionPassword(data.user.password); // 세션에서 비밀번호 저장
+          setPreviewUrl(`http://localhost:4000/uploads/${data.user.avatarUrl}`);
         }
       } catch (error) {
         console.error('프로필 정보를 가져오는 중 오류:', error);
@@ -54,6 +56,12 @@ export default function EditProfile() {
     }));
   };
 
+  const handleFileChange = (event) => {
+    const file = event.target.files[0];
+    setAvatarFile(file);
+    setPreviewUrl(URL.createObjectURL(file));
+  };
+
   const handlePasswordChange = (event) => {
     const { name, value } = event.target;
     setPasswordData((prevData) => ({
@@ -63,16 +71,26 @@ export default function EditProfile() {
   };
 
   const handleUpdateProfile = async () => {
+    const formDataToSend = new FormData();
+    formDataToSend.append('name', formData.name);
+    formDataToSend.append('email', formData.email);
+    formDataToSend.append('username', formData.username);
+    formDataToSend.append('location', formData.location);
+
+    if (avatarFile) {
+      formDataToSend.append('avatar', avatarFile);
+    }
+
     try {
       const response = await fetch('http://localhost:4000/users/edit', {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
         credentials: 'include',
-        body: JSON.stringify(formData),
+        body: formDataToSend,
       });
 
       if (response.ok) {
         alert('프로필이 업데이트되었습니다.');
+        router.push('/'); // 홈으로 이동
       } else {
         console.error('프로필 업데이트 실패');
       }
@@ -108,23 +126,23 @@ export default function EditProfile() {
     }
   };
 
-  const handleCancelEdit = () => {
-    setIsEditingPassword(false);
-    setPasswordData({ oldPassword: '', newPassword: '', newPasswordConfirmation: '' });
-    setFormData({
-      name: '',
-      email: '',
-      username: '',
-      location: '',
-      avatarUrl: '',
-    });
-    // 초기 데이터로 복원하려면 다시 세션에서 불러와야 할 수 있습니다.
-  };
-
   return (
     <div className="edit-profile">
       <h2>프로필 수정</h2>
       <form onSubmit={(e) => e.preventDefault()} className="profile-form">
+        <div className="profile-image-container">
+          <label htmlFor="avatarUpload">
+            <img src={previewUrl || '/default-avatar.png'} alt="프로필 미리보기" className="profile-preview" />
+          </label>
+          <input
+            type="file"
+            accept="image/*"
+            onChange={handleFileChange}
+            id="avatarUpload"
+            style={{ display: 'none' }}
+          />
+        </div>
+
         <label>
           이름
           <input
@@ -146,17 +164,26 @@ export default function EditProfile() {
           />
         </label>
         <label>
-          프로필 이미지 URL
+          유저네임
           <input
             type="text"
-            name="avatarUrl"
-            placeholder={formData.avatarUrl}
-            value={formData.avatarUrl}
+            name="username"
+            placeholder={formData.username}
+            value={formData.username}
+            onChange={handleInputChange}
+          />
+        </label>
+        <label>
+          지역
+          <input
+            type="text"
+            name="location"
+            placeholder={formData.location}
+            value={formData.location}
             onChange={handleInputChange}
           />
         </label>
 
-        {/* 비밀번호 표시 */}
         <label className="password-field">
           비밀번호
           {isEditingPassword ? (
@@ -186,9 +213,13 @@ export default function EditProfile() {
                 className="password-input"
               />
               <button type="button" onClick={handleUpdatePassword} className="save-button">
-                변경
+                비밀번호 저장
               </button>
-              <button type="button" onClick={handleCancelEdit} className="cancel-button">
+              <button
+                type="button"
+                onClick={() => setIsEditingPassword(false)}
+                className="cancel-button"
+              >
                 취소
               </button>
             </>
@@ -209,27 +240,6 @@ export default function EditProfile() {
               </button>
             </div>
           )}
-        </label>
-
-        <label>
-          유저네임
-          <input
-            type="text"
-            name="username"
-            placeholder={formData.username}
-            value={formData.username}
-            onChange={handleInputChange}
-          />
-        </label>
-        <label>
-          지역
-          <input
-            type="text"
-            name="location"
-            placeholder={formData.location}
-            value={formData.location}
-            onChange={handleInputChange}
-          />
         </label>
 
         <button type="button" onClick={handleUpdateProfile} className="save-button">

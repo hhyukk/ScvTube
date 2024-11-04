@@ -20,6 +20,7 @@ nav {
   justify-content: space-between;
   align-items: center;
   flex-wrap: wrap;
+  position: relative; /* 추가: nav를 상대 위치로 설정 */
 }
 
 nav .logo a {
@@ -34,10 +35,49 @@ nav .logo a {
   display: flex;
   justify-content: center;
   align-items: center;
-  flex-grow: 1;
-  max-width: 550px;
+  position: absolute; /* 절대 위치 설정 */
+  left: 50%; /* 화면의 절반 지점으로 설정 */
+  transform: translateX(-50%); /* 화면 중앙에 정렬 */
+  max-width: 600px;
+  width: 100%;
   padding: 5px;
   border-radius: 30px;
+}
+
+.video-card {
+  display: flex;
+  align-items: center; /* 썸네일과 제목을 수직으로 정렬 */
+  border: 1px solid #ddd; /* 카드 경계선 */
+  border-radius: 8px; /* 둥근 모서리 */
+  padding: 15px; /* 내부 여백 */
+  margin-bottom: 10px; /* 카드 간 간격 */
+  transition: box-shadow 0.3s; /* 호버 시 효과 */
+  width: 100%; /* 카드 너비를 100%로 설정 */
+  max-width: 400px; /* 카드 최대 너비 설정 */
+}
+
+.video-card:hover {
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1); /* 호버 시 그림자 효과 */
+}
+
+.video-card a {
+  text-decoration: none; /* 링크 스타일 제거 */
+  color: #333; /* 텍스트 색상 */
+}
+
+.video-card a:hover {
+  color: #0070f3; /* 링크 호버 색상 */
+}
+
+.video-card strong {
+  display: inline-block; /* 각 항목을 블록으로 표시 */
+  margin-bottom: 5px; /* 항목 간 간격 */
+}
+
+.thumbnail {
+  width: 120px; /* 썸네일 크기 조정 */
+  height: auto; /* 비율 유지 */
+  margin-right: 10px; /* 썸네일과 제목 간의 간격 */
 }
 
 .search-input {
@@ -46,7 +86,6 @@ nav .logo a {
   border: none;
   border-top-left-radius: 30px;
   border-bottom-left-radius: 30px;
-  outline: none;
 }
 
 .search-button {
@@ -62,6 +101,14 @@ nav .logo a {
 
 .search-button:hover {
   background-color: #ff9933;
+}
+
+/* 검색 결과 정렬 */
+.video-list {
+  display: flex;
+  flex-direction: column; /* 세로로 나열 */
+  align-items: flex-start; /* 왼쪽 정렬 */
+  margin-top: 20px; /* 검색 결과와의 간격 */
 }
 
 .hamburger {
@@ -161,6 +208,100 @@ h1 {
 }
 
 /* 업로드된 비디오 리스트 스타일 */
+.video-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); /* 반응형 그리드 레이아웃 */
+  gap: 15px; /* 비디오 사이의 간격 */
+  list-style: none;
+  padding: 0;
+}
+
+.video-item {
+  background-color: #f9f9f9; /* 배경색 */
+  border-radius: 8px; /* 모서리 둥글게 */
+  overflow: hidden; /* 내용이 박스를 넘치지 않도록 */
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1); /* 그림자 추가 */
+  text-align: center; /* 제목 가운데 정렬 */
+}
+
+.video-thumbnail {
+  width: 100%; /* 박스 너비에 맞춤 */
+  height: auto; /* 자동으로 높이 조정 */
+}
+
+.video-title {
+  margin-top: 8px; /* 제목과 썸네일 사이의 간격 */
+  font-weight: bold; /* 제목을 두껍게 */
+  color: #333; /* 제목 색상 */
+  padding: 10px; /* 제목의 패딩 */
+}
+.video-container {
+  max-width: 600px; /* 최대 너비 설정 */
+  margin: 0 auto; /* 가운데 정렬 */
+  text-align: center; /* 비디오 가운데 정렬 */
+}
+
+.video-container video {
+  width: 100%; /* 비디오를 컨테이너 너비에 맞게 조정 */
+  margin-bottom: 20px; /* 비디오와 다른 요소 간 간격 */
+}
+
+.video-details {
+  text-align: left; /* 텍스트 왼쪽 정렬 */
+  margin-top: 20px; /* 비디오와 세부 정보 간의 간격 */
+}
+
+.input-group {
+  margin-bottom: 15px; /* 각 입력 그룹 간의 간격 */
+  text-align: left; /* 입력 필드와 레이블을 왼쪽 정렬 */
+}
+
+.input-group label {
+  display: block; /* 레이블을 블록 요소로 설정하여 각 입력 필드 위에 배치 */
+  margin-bottom: 5px; /* 레이블과 입력 필드 간의 간격 */
+}
+
+.button-container {
+  display: flex; /* 버튼들을 가로로 배치 */
+  justify-content: flex-end; /* 왼쪽 정렬 */
+  gap: 10px; /* 버튼 간의 간격 */
+  margin-top: 10px; /* 버튼 상단 여백 */
+}
+
+.edit-delete-buttons {
+  display: flex; /* 버튼들을 가로로 배치 */
+  justify-content: flex-end; /* 오른쪽 정렬 */
+  gap: 10px; /* 수정, 삭제 버튼 간의 간격 (저장, 취소 버튼과 동일) */
+  margin-top: 10px; /* 영상 정보와 버튼 사이의 여백 */
+}
+
+.button {
+  padding: 10px 15px; /* 버튼 내부 여백 */
+  border: none; /* 기본 테두리 제거 */
+  border-radius: 5px; /* 모서리 둥글게 */
+  cursor: pointer; /* 커서 포인터 */
+}
+
+.save-button {
+  background-color: #F99B49; /* 저장 버튼 색상 */
+  color: white; /* 글자색 */
+}
+
+.cancel-button {
+  background-color: #F99B49; /* 취소 버튼 색상 */
+  color: white; /* 글자색 */
+}
+
+.edit-button {
+  background-color: #F99B49; /* 수정 버튼 색상 */
+  color: white; /* 글자색 */
+}
+
+.delete-button {
+  background-color: #F99B49; /* 삭제 버튼 색상 */
+  color: white; /* 글자색 */
+}
+
 h2 {
   text-align: center;
   margin-top: 30px;
@@ -362,7 +503,8 @@ li p {
 }
 
 .input-group input[type="text"],
-.input-group input[type="email"] {
+.input-group input[type="email"],
+.input-group input[type="password"] {
   width: 100%;
   padding: 10px;
   border: 1px solid #ccc;
@@ -371,7 +513,8 @@ li p {
 }
 
 .input-group input[type="text"]:focus,
-.input-group input[type="email"]:focus {
+.input-group input[type="email"]:focus,
+.input-group input[type="password"]:focus {
   border-color: #F99B49;
 }
 
@@ -391,7 +534,6 @@ li p {
   background-color: #FF7700;
 }
 
-/* 프로필 수정페이지 css */
 .edit-profile {
   max-width: 500px;
   margin: 2rem auto;
@@ -439,19 +581,16 @@ li p {
   outline: none;
 }
 
-.edit-profile .password-section {
+.edit-profile .password-field {
   display: flex;
-  align-items: center;
+  flex-direction: column;
+  align-items: stretch;
   margin-bottom: 1.2rem;
 }
 
-.edit-profile .password-section input {
-  flex: 1;
-  margin-right: 0.5rem;
-}
-
 .edit-profile button {
-  padding: 0.75rem 1.5rem;
+  width: 100%; /* 버튼 너비를 컨테이너에 맞춤 */
+  padding: 0.75rem;
   font-size: 1rem;
   color: #ffffff;
   background-color: #F99B43;
@@ -466,29 +605,15 @@ li p {
   background-color: #FF7700;
 }
 
-.edit-profile .change-password-button {
-  font-size: 0.9rem;
-  color: #F99B49;
-  background: none;
-  border: none;
-  cursor: pointer;
-  margin-left: 0.5rem;
-}
-
-.edit-profile .change-password-button:hover {
-  color: #FF7700;
+.edit-profile .edit-password-button,
+.edit-profile .cancel-button,
+.edit-profile .save-button {
+  width: 100%; /* 버튼 너비를 컨테이너에 맞춤 */
+  margin-top: 1rem;
 }
 
 .edit-profile .cancel-button {
-  padding: 0.75rem 1.5rem;
-  font-size: 1rem;
-  color: #ffffff;
-  background-color: #F99B49;
-  border: none;
-  border-radius: 4px;
-  cursor: pointer;
-  transition: background-color 0.3s ease;
-  margin-top: 1rem;
+  background-color: #F99B43;
 }
 
 .edit-profile .cancel-button:hover {
@@ -504,15 +629,36 @@ li p {
 .profile-preview {
   width: 100px;
   height: 100px;
-  border-radius: 50%; /* 원형 이미지 */
+  border-radius: 50%;
+  background-color: gray; /* 배경색을 회색으로 설정 */
+  display: flex;
+  justify-content: center;
+  align-items: center;
   object-fit: cover;
-  cursor: pointer; /* 클릭 가능 표시 */
+  cursor: pointer;
 }
 
 .password-field {
-  margin-top: 1rem;
+  display: flex;
+  gap: 0.5rem;
+  align-items: center;
 }
 
-.save-button {
-  margin-top: 1rem;
+.password-display {
+  display: flex;
+  justify-content: center;
+}
+
+.password-input {
+  margin-bottom: 0.5rem;
+}
+
+.button-group {
+  display: flex;
+  gap: 0.5rem;
+}
+
+.button-group .save-button,
+.button-group .cancel-button {
+  flex: 1; /* 버튼을 균등하게 배분 */
 }

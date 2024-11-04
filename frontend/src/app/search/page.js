@@ -31,22 +31,20 @@ export default function SearchPage() {
   return (
     <div className="search-container">
       <h1>검색 결과</h1>
-      {videoList.length > 0 ? (
-        <ul>
-          {videoList.map((video) => (
-            <li key={video._id}> {/* MongoDB에서는 _id 사용 */}
+      <div className="video-list">
+        {videoList.length > 0 ? (
+          videoList.map((video) => (
+            <div className="video-card" key={video._id}>
               <a href={`/videos/${video._id}`}>
+                <img src={`http://localhost:4000/uploads/${video.thumbnail}`} alt={video.title} className="thumbnail" />
                 <strong>제목:</strong> {video.title} <br />
-                <strong>설명:</strong> {video.description} <br />
-                <strong>태그:</strong> {Array.isArray(video.hashtags) ? video.hashtags.join(', ') : video.hashtags} <br /> {/* 배열 처리 */}
-                <strong>업로드 시간:</strong> {new Date(video.createdAt).toLocaleString()} <br /> {/* 날짜 형식 변환 */}
               </a>
-            </li>
-          ))}
-        </ul>
-      ) : (
-        <p>검색 결과가 없습니다.</p>
-      )}
+            </div>
+          ))
+        ) : (
+          <p>검색 결과가 없습니다.</p>
+        )}
+      </div>
     </div>
-  );
+  );  
 }

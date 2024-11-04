@@ -77,27 +77,28 @@ export default function EditProfile() {
     formDataToSend.append('username', formData.username);
     formDataToSend.append('location', formData.location);
 
+    // 아바타 파일이 있는 경우 FormData에 추가
     if (avatarFile) {
-      formDataToSend.append('avatar', avatarFile);
+        formDataToSend.append('avatar', avatarFile);
     }
 
     try {
-      const response = await fetch('http://localhost:4000/users/edit', {
-        method: 'POST',
-        credentials: 'include',
-        body: formDataToSend,
-      });
+        const response = await fetch('http://localhost:4000/users/edit', {
+            method: 'POST',
+            credentials: 'include',
+            body: formDataToSend,
+        });
 
-      if (response.ok) {
-        alert('프로필이 업데이트되었습니다.');
-        router.push('/'); // 홈으로 이동
-      } else {
-        console.error('프로필 업데이트 실패');
-      }
+        if (response.ok) {
+            alert('프로필이 업데이트되었습니다.');
+            router.push('/'); // 홈으로 이동
+        } else {
+            console.error('프로필 업데이트 실패');
+        }
     } catch (error) {
-      console.error('프로필 업데이트 중 오류:', error);
+        console.error('프로필 업데이트 중 오류:', error);
     }
-  };
+};
 
   const handleUpdatePassword = async () => {
     if (passwordData.newPassword !== passwordData.newPasswordConfirmation) {
@@ -124,6 +125,10 @@ export default function EditProfile() {
     } catch (error) {
       console.error('비밀번호 업데이트 중 오류:', error);
     }
+  };
+
+  const handleCancelPasswordEdit = () => {
+    setIsEditingPassword(false); // 비밀번호 입력 필드를 숨김
   };
 
   return (
@@ -185,66 +190,66 @@ export default function EditProfile() {
         </label>
 
         <label className="password-field">
-          비밀번호
-          {isEditingPassword ? (
-            <>
-              <input
+    비밀번호
+    {isEditingPassword ? (
+        <>
+            <input
                 type="password"
                 name="oldPassword"
                 placeholder="기존 비밀번호"
                 value={passwordData.oldPassword}
                 onChange={handlePasswordChange}
                 className="password-input"
-              />
-              <input
+            />
+            <input
                 type="password"
                 name="newPassword"
                 placeholder="새 비밀번호"
                 value={passwordData.newPassword}
                 onChange={handlePasswordChange}
                 className="password-input"
-              />
-              <input
+            />
+            <input
                 type="password"
                 name="newPasswordConfirmation"
                 placeholder="새 비밀번호 확인"
                 value={passwordData.newPasswordConfirmation}
                 onChange={handlePasswordChange}
                 className="password-input"
-              />
-              <button type="button" onClick={handleUpdatePassword} className="save-button">
-                비밀번호 저장
-              </button>
-              <button
-                type="button"
-                onClick={() => setIsEditingPassword(false)}
-                className="cancel-button"
-              >
-                취소
-              </button>
-            </>
-          ) : (
-            <div className="password-display">
-              <input
-                type="password"
-                value="********"
-                disabled
-                className="password-input"
-              />
-              <button
-                type="button"
-                onClick={() => setIsEditingPassword(true)}
-                className="edit-password-button"
-              >
-                비밀번호 변경하기
-              </button>
+            />
+            <div className="button-group">
+                <button
+                    type="button"
+                    onClick={handleUpdatePassword}
+                    className="save-button"
+                >
+                    비밀번호 저장
+                </button>
+                <button
+                    type="button"
+                    onClick={handleCancelPasswordEdit}
+                    className="cancel-button"
+                >
+                    취소
+                </button>
             </div>
-          )}
-        </label>
-
-        <button type="button" onClick={handleUpdateProfile} className="save-button">
-          수정하기
+        </>
+    ) : (
+        <button
+            type="button"
+            onClick={() => setIsEditingPassword(true)}
+            className="edit-password-button"
+        >
+            비밀번호 변경하기
         </button>
+    )}
+</label>
+
+        <div className="button-group">
+          <button type="button" onClick={handleUpdateProfile} className="save-button">
+            수정하기
+          </button>
+        </div>
       </form>
     </div>
   );

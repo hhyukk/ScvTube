@@ -7,12 +7,13 @@ export default function VideoPage({ params }) {
   const [video, setVideo] = useState({
     title: '',
     description: '',
-    hashtags: [],
+    hashtags: '',
     createdAt: '',
+    filename: '',
   });
-  const [originalVideo, setOriginalVideo] = useState(null); // 원본 비디오 데이터 저장
+  const [originalVideo, setOriginalVideo] = useState(null);
   const [isEditing, setIsEditing] = useState(false);
-  const [loading, setLoading] = useState(true); // 로딩 상태 추가
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     const fetchVideo = async () => {
@@ -23,10 +24,15 @@ export default function VideoPage({ params }) {
         }
         const data = await response.json();
         setVideo({
-          ...data,
+          title: data.title,
+          description: data.description,
           hashtags: Array.isArray(data.hashtags) ? data.hashtags.join(', ') : data.hashtags,
+          createdAt: data.createdAt,
+          filename: data.filename,
         });
-        setOriginalVideo(data); // 원본 데이터 저장
+        setOriginalVideo(data);
+
+        console.log(`Video URL: http://localhost:4000/uploads/${data.filename}`);
       } catch (error) {
         console.error('Error fetching video:', error);
         alert('비디오를 불러오는 데 실패했습니다.');
@@ -90,12 +96,13 @@ export default function VideoPage({ params }) {
 
   const handleCancel = () => {
     setVideo({
-      title: originalVideo.title, // 원본 제목
-      description: originalVideo.description, // 원본 설명
-      hashtags: Array.isArray(originalVideo.hashtags) ? originalVideo.hashtags.join(', ') : originalVideo.hashtags, // 원본 해시태그
-      createdAt: originalVideo.createdAt, // 원본 업로드 시간
+      title: originalVideo.title,
+      description: originalVideo.description,
+      hashtags: Array.isArray(originalVideo.hashtags) ? originalVideo.hashtags.join(', ') : originalVideo.hashtags,
+      createdAt: originalVideo.createdAt,
+      filename: originalVideo.filename,
     });
-    setIsEditing(false); // 수정 모드 해제
+    setIsEditing(false);
   };
 
   const formatUploadTime = (dateString) => {
@@ -105,25 +112,39 @@ export default function VideoPage({ params }) {
     const day = String(date.getDate()).padStart(2, '0');
     const hours = String(date.getHours()).padStart(2, '0');
     const minutes = String(date.getMinutes()).padStart(2, '0');
-    return `${year}년 ${month}월 ${day}일 ${hours}:${minutes}`; // 포맷: YYYY년 MM월 DD일 HH:MM
+    return `${year}년 ${month}월 ${day}일 ${hours}:${minutes}`;
   };
 
   if (loading) {
-    return <p>비디오를 불러오는 중입니다...</p>; // 로딩 상태 처리
+    return <p>비디오를 불러오는 중입니다...</p>;
   }
 
   return (
     <div className="video-container">
       <h1>비디오 상세 정보</h1>
-
+  
       {!isEditing ? (
         <div>
-          <p><strong>제목:</strong> {video.title}</p>
-          <p><strong>설명:</strong> {video.description}</p>
-          <p><strong>태그:</strong> {video.hashtags}</p>
-          <p><strong>업로드 시간:</strong> {formatUploadTime(video.createdAt)}</p> {/* 업로드 시간 포맷 */}
-          <button onClick={() => setIsEditing(true)}>수정</button>
-          <button onClick={handleDelete}>삭제</button>
+          <video
+            controls
+            preload="auto"
+            src={`http://localhost:4000/uploads/${video.filename}`}
+            onError={() => alert('동영상을 불러올 수 없습니다.')}
+          >
+            동영상을 불러올 수 없습니다.
+          </video>
+          
+          <div className="video-details">
+            <p><strong>제목:</strong> {video.title}</p>
+            <p><strong>설명:</strong> {video.description}</p>
+            <p><strong>태그:</strong> {video.hashtags}</p>
+            <p><strong>업로드 시간:</strong> {formatUploadTime(video.createdAt)}</p>
+          </div>
+          
+          <div className="edit-delete-buttons">
+            <button className="button edit-button" onClick={() => setIsEditing(true)}>수정</button>
+            <button className="button delete-button" onClick={handleDelete}>삭제</button>
+          </div>
         </div>
       ) : (
         <div>
@@ -155,10 +176,12 @@ export default function VideoPage({ params }) {
               placeholder="쉼표로 태그를 구분하세요"
             />
           </div>
-          <button onClick={handleEdit}>저장</button>
-          <button onClick={handleCancel}>취소</button>
+          <div className="button-container">
+            <button className="button save-button" onClick={handleEdit}>저장</button>
+            <button className="button cancel-button" onClick={handleCancel}>취소</button>
+          </div>
         </div>
       )}
     </div>
-  );
+  );    
 }

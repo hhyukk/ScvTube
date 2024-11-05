@@ -22,32 +22,26 @@ export default function HomePage() {
     fetchVideos();
   }, []);
 
-  const formatUploadTime = (dateString) => {
-    const date = new Date(dateString);
-    const year = date.getFullYear();
-    const month = String(date.getMonth() + 1).padStart(2, '0');
-    const day = String(date.getDate()).padStart(2, '0');
-    const hours = String(date.getHours()).padStart(2, '0');
-    const minutes = String(date.getMinutes()).padStart(2, '0');
-    return `${year}년 ${month}월 ${day}일 ${hours}:${minutes}`;
-  };
-
   return (
     <div className="home-container">
-      <div className="video-list">
+      <div className="home-video-list"> {/* 클래스 이름 변경 */}
         {videoList === null ? (
           <p>게시글을 불러오는 중입니다...</p>
         ) : videoList.length > 0 ? (
-          <ul className="video-grid">
+          <ul className="home-video-grid"> {/* 클래스 이름 변경 */}
             {videoList.map((video) => (
-              <li key={video._id} className="video-item">
+              <li key={video._id} className="home-video-item"> {/* 클래스 이름 변경 */}
                 <a href={`/videos/${video._id}`}>
-                  <img
-                    src={video.thumbnailUrl}
-                    alt={video.title}
-                    className="video-thumbnail"
-                  />
-                  <div className="video-title">제목 : {video.title}</div>
+                  <video
+                    controls
+                    preload="auto"
+                    src={`http://localhost:4000/${video.fileUrl}`} // fileUrl을 사용하여 비디오 재생
+                    onError={() => alert('동영상을 불러올 수 없습니다.')}
+                    className="video-player"
+                  >
+                    동영상을 불러올 수 없습니다.
+                  </video>
+                  <div className="video-title">제목: {video.title}</div>
                 </a>
               </li>
             ))}

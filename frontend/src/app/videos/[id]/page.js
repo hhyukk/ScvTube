@@ -23,16 +23,17 @@ export default function VideoPage({ params }) {
           throw new Error('비디오를 불러오는 데 실패했습니다.');
         }
         const data = await response.json();
+        const filePath = data.fileUrl.replace(/\\/g, '/'); // 백슬래시를 슬래시로 변경
+
         setVideo({
           title: data.title,
           description: data.description,
           hashtags: Array.isArray(data.hashtags) ? data.hashtags.join(', ') : data.hashtags,
           createdAt: data.createdAt,
-          filename: data.filename,
+          filename: filePath, // fileUrl로 수정
         });
         setOriginalVideo(data);
-
-        console.log(`Video URL: http://localhost:4000/uploads/${data.filename}`);
+        
       } catch (error) {
         console.error('Error fetching video:', error);
         alert('비디오를 불러오는 데 실패했습니다.');
@@ -100,7 +101,7 @@ export default function VideoPage({ params }) {
       description: originalVideo.description,
       hashtags: Array.isArray(originalVideo.hashtags) ? originalVideo.hashtags.join(', ') : originalVideo.hashtags,
       createdAt: originalVideo.createdAt,
-      filename: originalVideo.filename,
+      filename: originalVideo.fileUrl.replace(/\\/g, '/'), // 백슬래시를 슬래시로 변경
     });
     setIsEditing(false);
   };
@@ -128,7 +129,7 @@ export default function VideoPage({ params }) {
           <video
             controls
             preload="auto"
-            src={`http://localhost:4000/uploads/${video.filename}`}
+            src={`http://localhost:4000/${video.filename}`} // fileUrl에 기반한 경로
             onError={() => alert('동영상을 불러올 수 없습니다.')}
           >
             동영상을 불러올 수 없습니다.

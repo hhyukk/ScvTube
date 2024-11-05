@@ -4,7 +4,7 @@ import { useEffect, useState } from 'react';
 import { useSearchParams } from 'next/navigation';
 
 export default function SearchPage() {
-  const [videoList, setVideoList] = useState([]);
+  const [videoList, setVideoList] = useState(null);
   const searchParams = useSearchParams();
   const keyword = searchParams.get('keyword'); // URL에서 검색어 가져오기
 
@@ -29,20 +29,31 @@ export default function SearchPage() {
   }, [keyword]); // keyword가 변경될 때마다 호출
 
   return (
-    <div className="search-container">
-      <h1>검색 결과</h1>
-      <div className="video-list">
-        {videoList.length > 0 ? (
-          videoList.map((video) => (
-            <div className="video-card" key={video._id}>
-              <a href={`/videos/${video._id}`}>
-                <img src={`http://localhost:4000/uploads/${video.thumbnail}`} alt={video.title} className="thumbnail" />
-                <strong>제목:</strong> {video.title} <br />
-              </a>
-            </div>
-          ))
+    <div className="search-video-container">
+      <div className="search-video-list"> {/* 클래스 이름 변경 */}
+        {videoList === null ? (
+          <p>게시글을 불러오는 중입니다...</p>
+        ) : videoList.length > 0 ? (
+          <ul className="search-video-grid"> {/* 클래스 이름 변경 */}
+            {videoList.map((video) => (
+              <li key={video._id} className="search-video-item"> {/* 클래스 이름 변경 */}
+                <a href={`/videos/${video._id}`}>
+                  <video
+                    controls
+                    preload="auto"
+                    src={`http://localhost:4000/${video.fileUrl}`} // fileUrl을 사용하여 비디오 재생
+                    onError={() => alert('동영상을 불러올 수 없습니다.')}
+                    className="video-player"
+                  >
+                    동영상을 불러올 수 없습니다.
+                  </video>
+                  <div className="video-title">제목: {video.title}</div>
+                </a>
+              </li>
+            ))}
+          </ul>
         ) : (
-          <p>검색 결과가 없습니다.</p>
+          <p>아직 게시된 비디오가 없습니다.</p>
         )}
       </div>
     </div>

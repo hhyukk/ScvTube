@@ -36,9 +36,14 @@ export default function EditProfile() {
             email: data.user.email,
             username: data.user.username,
             location: data.user.location,
-            avatarUrl: data.user.avatarUrl,
+            avatarUrl: data.user.avatarUrl, // fileUrl 대신 avatarUrl 사용
           });
-          setPreviewUrl(`http://localhost:4000/uploads/${data.user.avatarUrl}`);
+          // 기존 이미지가 있을 경우 previewUrl 설정
+          if (data.user.avatarUrl) {
+            setPreviewUrl(`http://localhost:4000/${data.user.avatarUrl.replace(/\\/g, '/')}`);
+          } else {
+            setPreviewUrl('/default-avatar.png'); // 기본 이미지 URL 설정
+          }
         }
       } catch (error) {
         console.error('프로필 정보를 가져오는 중 오류:', error);
@@ -59,7 +64,7 @@ export default function EditProfile() {
   const handleFileChange = (event) => {
     const file = event.target.files[0];
     setAvatarFile(file);
-    setPreviewUrl(URL.createObjectURL(file));
+    setPreviewUrl(URL.createObjectURL(file)); // 파일 선택 시 미리보기
   };
 
   const handlePasswordChange = (event) => {
@@ -79,26 +84,26 @@ export default function EditProfile() {
 
     // 아바타 파일이 있는 경우 FormData에 추가
     if (avatarFile) {
-        formDataToSend.append('avatar', avatarFile);
+      formDataToSend.append('avatar', avatarFile);
     }
 
     try {
-        const response = await fetch('http://localhost:4000/users/edit', {
-            method: 'POST',
-            credentials: 'include',
-            body: formDataToSend,
-        });
+      const response = await fetch('http://localhost:4000/users/edit', {
+        method: 'POST',
+        credentials: 'include',
+        body: formDataToSend,
+      });
 
-        if (response.ok) {
-            alert('프로필이 업데이트되었습니다.');
-            router.push('/'); // 홈으로 이동
-        } else {
-            console.error('프로필 업데이트 실패');
-        }
+      if (response.ok) {
+        alert('프로필이 업데이트되었습니다.');
+        router.push('/'); // 홈으로 이동
+      } else {
+        console.error('프로필 업데이트 실패');
+      }
     } catch (error) {
-        console.error('프로필 업데이트 중 오류:', error);
+      console.error('프로필 업데이트 중 오류:', error);
     }
-};
+  };
 
   const handleUpdatePassword = async () => {
     if (passwordData.newPassword !== passwordData.newPasswordConfirmation) {
@@ -190,60 +195,60 @@ export default function EditProfile() {
         </label>
 
         <label className="password-field">
-    비밀번호
-    {isEditingPassword ? (
-        <>
-            <input
+          비밀번호
+          {isEditingPassword ? (
+            <>
+              <input
                 type="password"
                 name="oldPassword"
                 placeholder="기존 비밀번호"
                 value={passwordData.oldPassword}
                 onChange={handlePasswordChange}
                 className="password-input"
-            />
-            <input
+              />
+              <input
                 type="password"
                 name="newPassword"
                 placeholder="새 비밀번호"
                 value={passwordData.newPassword}
                 onChange={handlePasswordChange}
                 className="password-input"
-            />
-            <input
+              />
+              <input
                 type="password"
                 name="newPasswordConfirmation"
                 placeholder="새 비밀번호 확인"
                 value={passwordData.newPasswordConfirmation}
                 onChange={handlePasswordChange}
                 className="password-input"
-            />
-            <div className="button-group">
+              />
+              <div className="button-group">
                 <button
-                    type="button"
-                    onClick={handleUpdatePassword}
-                    className="save-button"
+                  type="button"
+                  onClick={handleUpdatePassword}
+                  className="save-button"
                 >
-                    비밀번호 저장
+                  비밀번호 저장
                 </button>
                 <button
-                    type="button"
-                    onClick={handleCancelPasswordEdit}
-                    className="cancel-button"
+                  type="button"
+                  onClick={handleCancelPasswordEdit}
+                  className="cancel-button"
                 >
-                    취소
+                  취소
                 </button>
-            </div>
-        </>
-    ) : (
-        <button
-            type="button"
-            onClick={() => setIsEditingPassword(true)}
-            className="edit-password-button"
-        >
-            비밀번호 변경하기
-        </button>
-    )}
-</label>
+              </div>
+            </>
+          ) : (
+            <button
+              type="button"
+              onClick={() => setIsEditingPassword(true)}
+              className="edit-password-button"
+            >
+              비밀번호 변경하기
+            </button>
+          )}
+        </label>
 
         <div className="button-group">
           <button type="button" onClick={handleUpdateProfile} className="save-button">

@@ -1,5 +1,6 @@
 import User from '../models/User';
 import bcrypt from 'bcrypt';
+import Video from '../models/Video';
 
 const rootPage = 'http://localhost:3000/';
 
@@ -258,4 +259,14 @@ export const postChangePassword = async (req, res) => {
   user.password = newPassword;
   await user.save();
   return res.status(200).send('Ok');
+};
+
+export const getSee = async (req, res) => {
+  const { id } = req.params;
+  const user = await User.findById(id);
+  if (!user) {
+    return res.status(404).send('User not found.');
+  }
+  const videos = await Video.find({ owner: user._id });
+  return res.status(200).send(videos);
 };

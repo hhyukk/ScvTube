@@ -97,7 +97,9 @@ export default function RootLayout({ children }) {
               <>
                 <Link href="/upload">Upload Video</Link>
                 <Link href="/profile">{username}</Link>
-                <a href="/logout" onClick={handleLogout}>Logout</a>
+                <a href="/logout" onClick={handleLogout}>
+                  Logout
+                </a>
               </>
             )}
           </div>

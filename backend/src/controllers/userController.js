@@ -162,9 +162,7 @@ export const finishKakaoLogin = async (req, res) => {
   ).json();
 
   const userInfo = userData.kakao_account;
-  console.log(userInfo);
   const nickname = userInfo.profile.nickname;
-  console.log(nickname);
 
   if (!nickname) {
     return res.redirect(`${rootPage}/login`);
@@ -209,8 +207,6 @@ export const postEdit = async (req, res) => {
     file,
   } = req;
 
-  console.log('file.path:', file ? file.path : 'no file uploaded');
-
   // 중복 확인 후 세션의 값과 동일한지 검토
   if (await User.exists({ $or: [{ username }, { email }] })) {
     if (sessionEmail === email || sessionUserName === username) {
@@ -240,7 +236,6 @@ export const postEdit = async (req, res) => {
       console.error('세션 저장 오류:', err);
       return res.status(500).json({ errorMessage: '세션 저장 중 오류가 발생했습니다.' });
     }
-    console.log('session값: ', req.session.user);
     return res.status(200).send('Ok');
   });
 };

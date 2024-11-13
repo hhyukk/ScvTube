@@ -33,7 +33,6 @@ export default function VideoPage({ params }) {
           filename: filePath, // fileUrl로 수정
         });
         setOriginalVideo(data);
-        
       } catch (error) {
         console.error('Error fetching video:', error);
         alert('비디오를 불러오는 데 실패했습니다.');
@@ -51,7 +50,7 @@ export default function VideoPage({ params }) {
     try {
       const updatedVideo = {
         ...video,
-        hashtags: video.hashtags.split(',').map(tag => tag.trim()),
+        hashtags: video.hashtags.split(',').map((tag) => tag.trim()),
       };
 
       const response = await fetch(`http://localhost:4000/videos/${id}/edit`, {
@@ -123,7 +122,7 @@ export default function VideoPage({ params }) {
   return (
     <div className="video-container">
       <h1>비디오 상세 정보</h1>
-  
+
       {!isEditing ? (
         <div>
           <video
@@ -134,17 +133,29 @@ export default function VideoPage({ params }) {
           >
             동영상을 불러올 수 없습니다.
           </video>
-          
+
           <div className="video-details">
-            <p><strong>제목:</strong> {video.title}</p>
-            <p><strong>설명:</strong> {video.description}</p>
-            <p><strong>태그:</strong> {video.hashtags}</p>
-            <p><strong>업로드 시간:</strong> {formatUploadTime(video.createdAt)}</p>
+            <p>
+              <strong>제목:</strong> {video.title}
+            </p>
+            <p>
+              <strong>설명:</strong> {video.description}
+            </p>
+            <p>
+              <strong>태그:</strong> {video.hashtags}
+            </p>
+            <p>
+              <strong>업로드 시간:</strong> {formatUploadTime(video.createdAt)}
+            </p>
           </div>
-          
+
           <div className="edit-delete-buttons">
-            <button className="button edit-button" onClick={() => setIsEditing(true)}>수정</button>
-            <button className="button delete-button" onClick={handleDelete}>삭제</button>
+            <button className="button edit-button" onClick={() => setIsEditing(true)}>
+              수정
+            </button>
+            <button className="button delete-button" onClick={handleDelete}>
+              삭제
+            </button>
           </div>
         </div>
       ) : (
@@ -178,11 +189,15 @@ export default function VideoPage({ params }) {
             />
           </div>
           <div className="button-container">
-            <button className="button save-button" onClick={handleEdit}>저장</button>
-            <button className="button cancel-button" onClick={handleCancel}>취소</button>
+            <button className="button save-button" onClick={handleEdit}>
+              저장
+            </button>
+            <button className="button cancel-button" onClick={handleCancel}>
+              취소
+            </button>
           </div>
         </div>
       )}
     </div>
-  );    
+  );
 }

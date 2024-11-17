@@ -2,7 +2,8 @@ import Video from '../models/Video';
 
 export const watch = async (req, res) => {
   const { id } = req.params;
-  const video = await Video.findById(id);
+  const video = await Video.findById(id).populate('owner');
+  console.log('video: ', video);
   if (!video) {
     return res.status(404).json({ error: 'not find Video' });
   }

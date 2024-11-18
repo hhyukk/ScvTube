@@ -263,10 +263,9 @@ export const postChangePassword = async (req, res) => {
 
 export const getSee = async (req, res) => {
   const { id } = req.params;
-  const user = await User.findById(id);
-  if (!user) {
+  const userVideo = await User.findById(id).populate('videos');
+  if (!userVideo) {
     return res.status(404).send('User not found.');
   }
-  const videos = await Video.find({ owner: user._id });
-  return res.status(200).send(videos);
+  return res.status(200).send(userVideo);
 };

@@ -1,4 +1,5 @@
 import Video from '../models/Video';
+import User from '../models/User';
 
 export const watch = async (req, res) => {
   const { id } = req.params;
@@ -63,13 +64,16 @@ export const postUpload = async (req, res) => {
   const { path: fileUrl } = req.file;
   const { title, description, hashtags } = req.body;
   try {
-    await Video.create({
+    const newVideo = await Video.create({
       title,
       description,
       fileUrl,
       owner: _id,
       hashtags: Video.formatHashtags(hashtags),
     });
+    const user = await User.findById(_id);
+    user.videos.push(newVideo._id);
+    user.save();
     return res.status(200).json({ message: 'Upload successful' }); // JSON 응답
   } catch (error) {
     console.error(error);

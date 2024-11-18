@@ -10,7 +10,9 @@ export default function VideoPage({ params }) {
     hashtags: '',
     createdAt: '',
     filename: '',
+    ownerId: '', // 소유자 ID 추가
   });
+  const [userId, setUserId] = useState(null); // 현재 로그인한 사용자 ID
   const [originalVideo, setOriginalVideo] = useState(null);
   const [isEditing, setIsEditing] = useState(false);
   const [loading, setLoading] = useState(true);
@@ -31,6 +33,7 @@ export default function VideoPage({ params }) {
           hashtags: Array.isArray(data.hashtags) ? data.hashtags.join(', ') : data.hashtags,
           createdAt: data.createdAt,
           filename: filePath, // fileUrl로 수정
+          ownerId: data.owner, // 소유자 ID 추가
         });
         setOriginalVideo(data);
       } catch (error) {
@@ -41,8 +44,24 @@ export default function VideoPage({ params }) {
       }
     };
 
+    const fetchUserSession = async () => {
+      try {
+        const response = await fetch('http://localhost:4000/session', {
+          method: 'GET',
+          credentials: 'include',
+        });
+        const data = await response.json();
+        if (data.loggedIn) {
+          setUserId(data.user.id); // 현재 로그인한 사용자 ID 저장
+        }
+      } catch (error) {
+        console.error('Error fetching user session:', error);
+      }
+    };
+
     if (id) {
       fetchVideo();
+      fetchUserSession();
     }
   }, [id]);
 
@@ -101,6 +120,7 @@ export default function VideoPage({ params }) {
       hashtags: Array.isArray(originalVideo.hashtags) ? originalVideo.hashtags.join(', ') : originalVideo.hashtags,
       createdAt: originalVideo.createdAt,
       filename: originalVideo.fileUrl.replace(/\\/g, '/'), // 백슬래시를 슬래시로 변경
+      ownerId: originalVideo.owner,
     });
     setIsEditing(false);
   };
@@ -118,6 +138,8 @@ export default function VideoPage({ params }) {
   if (loading) {
     return <p>비디오를 불러오는 중입니다...</p>;
   }
+
+  const isOwner = userId === video.ownerId; // 로그인한 사용자와 소유자 비교
 
   return (
     <div className="video-container">
@@ -149,14 +171,16 @@ export default function VideoPage({ params }) {
             </p>
           </div>
 
-          <div className="edit-delete-buttons">
-            <button className="button edit-button" onClick={() => setIsEditing(true)}>
-              수정
-            </button>
-            <button className="button delete-button" onClick={handleDelete}>
-              삭제
-            </button>
-          </div>
+          {isOwner && ( // 소유자인 경우에만 버튼 표시
+            <div className="edit-delete-buttons">
+              <button className="button edit-button" onClick={() => setIsEditing(true)}>
+                수정
+              </button>
+              <button className="button delete-button" onClick={handleDelete}>
+                삭제
+              </button>
+            </div>
+          )}
         </div>
       ) : (
         <div>

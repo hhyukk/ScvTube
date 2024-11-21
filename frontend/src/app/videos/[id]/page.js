@@ -33,7 +33,7 @@ export default function VideoPage({ params }) {
           hashtags: Array.isArray(data.hashtags) ? data.hashtags.join(', ') : data.hashtags,
           createdAt: data.createdAt,
           filename: filePath, // fileUrl로 수정
-          ownerId: data.owner, // 소유자 ID 추가
+          ownerId: data.owner._id.toString(), // 소유자 ID 추가
         });
         setOriginalVideo(data);
       } catch (error) {
@@ -52,7 +52,7 @@ export default function VideoPage({ params }) {
         });
         const data = await response.json();
         if (data.loggedIn) {
-          setUserId(data.user.id); // 현재 로그인한 사용자 ID 저장
+          setUserId(data.user._id.toString()); // 현재 로그인한 사용자 ID 저장
         }
       } catch (error) {
         console.error('Error fetching user session:', error);
@@ -120,7 +120,7 @@ export default function VideoPage({ params }) {
       hashtags: Array.isArray(originalVideo.hashtags) ? originalVideo.hashtags.join(', ') : originalVideo.hashtags,
       createdAt: originalVideo.createdAt,
       filename: originalVideo.fileUrl.replace(/\\/g, '/'), // 백슬래시를 슬래시로 변경
-      ownerId: originalVideo.owner,
+      ownerId: originalVideo.owner._id.toString(), // 소유자 ID 추가
     });
     setIsEditing(false);
   };
@@ -139,7 +139,7 @@ export default function VideoPage({ params }) {
     return <p>비디오를 불러오는 중입니다...</p>;
   }
 
-  const isOwner = userId === video.ownerId; // 로그인한 사용자와 소유자 비교
+  const isOwner = userId === video.ownerId; // 로그인한 사용자와 소유자 비교 (String 타입으로 변환된 값)
 
   return (
     <div className="video-container">

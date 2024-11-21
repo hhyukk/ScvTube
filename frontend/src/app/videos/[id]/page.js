@@ -11,6 +11,7 @@ export default function VideoPage({ params }) {
     createdAt: '',
     filename: '',
     ownerId: '', // 소유자 ID 추가
+    ownerUsername: '', // 업로더의 username 추가
   });
   const [userId, setUserId] = useState(null); // 현재 로그인한 사용자 ID
   const [originalVideo, setOriginalVideo] = useState(null);
@@ -34,6 +35,7 @@ export default function VideoPage({ params }) {
           createdAt: data.createdAt,
           filename: filePath, // fileUrl로 수정
           ownerId: data.owner._id.toString(), // 소유자 ID 추가
+          ownerUsername: data.owner.username, // 업로더의 username 추가
         });
         setOriginalVideo(data);
       } catch (error) {
@@ -121,6 +123,7 @@ export default function VideoPage({ params }) {
       createdAt: originalVideo.createdAt,
       filename: originalVideo.fileUrl.replace(/\\/g, '/'), // 백슬래시를 슬래시로 변경
       ownerId: originalVideo.owner._id.toString(), // 소유자 ID 추가
+      ownerUsername: originalVideo.owner.username, // 업로더의 username 추가
     });
     setIsEditing(false);
   };
@@ -165,6 +168,9 @@ export default function VideoPage({ params }) {
             </p>
             <p>
               <strong>태그:</strong> {video.hashtags}
+            </p>
+            <p>
+              <strong>업로더:</strong> {video.ownerUsername} {/* 업로더 이름 표시 */}
             </p>
             <p>
               <strong>업로드 시간:</strong> {formatUploadTime(video.createdAt)}

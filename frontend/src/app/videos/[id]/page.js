@@ -10,10 +10,10 @@ export default function VideoPage({ params }) {
     hashtags: '',
     createdAt: '',
     filename: '',
-    ownerId: '', // 소유자 ID 추가
-    ownerUsername: '', // 업로더의 username 추가
+    ownerId: '',
+    ownerUsername: '',
   });
-  const [userId, setUserId] = useState(null); // 현재 로그인한 사용자 ID
+  const [userId, setUserId] = useState(null);
   const [originalVideo, setOriginalVideo] = useState(null);
   const [isEditing, setIsEditing] = useState(false);
   const [loading, setLoading] = useState(true);
@@ -26,16 +26,16 @@ export default function VideoPage({ params }) {
           throw new Error('비디오를 불러오는 데 실패했습니다.');
         }
         const data = await response.json();
-        const filePath = data.fileUrl.replace(/\\/g, '/'); // 백슬래시를 슬래시로 변경
+        const filePath = data.fileUrl.replace(/\\/g, '/');
 
         setVideo({
           title: data.title,
           description: data.description,
           hashtags: Array.isArray(data.hashtags) ? data.hashtags.join(', ') : data.hashtags,
           createdAt: data.createdAt,
-          filename: filePath, // fileUrl로 수정
-          ownerId: data.owner._id.toString(), // 소유자 ID 추가
-          ownerUsername: data.owner.username, // 업로더의 username 추가
+          filename: filePath,
+          ownerId: data.owner._id.toString(),
+          ownerUsername: data.owner.username,
         });
         setOriginalVideo(data);
       } catch (error) {
@@ -54,7 +54,7 @@ export default function VideoPage({ params }) {
         });
         const data = await response.json();
         if (data.loggedIn) {
-          setUserId(data.user._id.toString()); // 현재 로그인한 사용자 ID 저장
+          setUserId(data.user._id.toString());
         }
       } catch (error) {
         console.error('Error fetching user session:', error);
@@ -121,9 +121,9 @@ export default function VideoPage({ params }) {
       description: originalVideo.description,
       hashtags: Array.isArray(originalVideo.hashtags) ? originalVideo.hashtags.join(', ') : originalVideo.hashtags,
       createdAt: originalVideo.createdAt,
-      filename: originalVideo.fileUrl.replace(/\\/g, '/'), // 백슬래시를 슬래시로 변경
-      ownerId: originalVideo.owner._id.toString(), // 소유자 ID 추가
-      ownerUsername: originalVideo.owner.username, // 업로더의 username 추가
+      filename: originalVideo.fileUrl.replace(/\\/g, '/'),
+      ownerId: originalVideo.owner._id.toString(),
+      ownerUsername: originalVideo.owner.username,
     });
     setIsEditing(false);
   };
@@ -142,7 +142,7 @@ export default function VideoPage({ params }) {
     return <p>비디오를 불러오는 중입니다...</p>;
   }
 
-  const isOwner = userId === video.ownerId; // 로그인한 사용자와 소유자 비교 (String 타입으로 변환된 값)
+  const isOwner = userId === video.ownerId;
 
   return (
     <div className="video-container">
@@ -153,7 +153,7 @@ export default function VideoPage({ params }) {
           <video
             controls
             preload="auto"
-            src={`http://localhost:4000/${video.filename}`} // fileUrl에 기반한 경로
+            src={`http://localhost:4000/${video.filename}`}
             onError={() => alert('동영상을 불러올 수 없습니다.')}
           >
             동영상을 불러올 수 없습니다.
@@ -170,14 +170,14 @@ export default function VideoPage({ params }) {
               <strong>태그:</strong> {video.hashtags}
             </p>
             <p>
-              <strong>업로더:</strong> {video.ownerUsername} {/* 업로더 이름 표시 */}
+              <strong>업로더:</strong> {video.ownerUsername}
             </p>
             <p>
               <strong>업로드 시간:</strong> {formatUploadTime(video.createdAt)}
             </p>
           </div>
 
-          {isOwner && ( // 소유자인 경우에만 버튼 표시
+          {isOwner && (
             <div className="edit-delete-buttons">
               <button className="button edit-button" onClick={() => setIsEditing(true)}>
                 수정

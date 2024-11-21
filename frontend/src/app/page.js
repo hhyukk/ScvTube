@@ -24,18 +24,18 @@ export default function HomePage() {
 
   return (
     <div className="home-container">
-      <div className="home-video-list"> {/* 클래스 이름 변경 */}
+      <div className="home-video-list">
         {videoList === null ? (
           <p>게시글을 불러오는 중입니다...</p>
         ) : videoList.length > 0 ? (
-          <ul className="home-video-grid"> {/* 클래스 이름 변경 */}
+          <ul className="home-video-grid">
             {videoList.map((video) => (
-              <li key={video._id} className="home-video-item"> {/* 클래스 이름 변경 */}
+              <li key={video._id} className="home-video-item">
                 <a href={`/videos/${video._id}`}>
                   <video
                     controls
                     preload="auto"
-                    src={`http://localhost:4000/${video.fileUrl}`} // fileUrl을 사용하여 비디오 재생
+                    src={`http://localhost:4000/${video.fileUrl}`}
                     onError={() => alert('동영상을 불러올 수 없습니다.')}
                     className="video-player"
                   >

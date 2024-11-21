@@ -2,6 +2,7 @@
 
 import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
+import Link from 'next/link';
 
 export default function EditProfile() {
   const router = useRouter();
@@ -12,8 +13,12 @@ export default function EditProfile() {
     location: '',
     avatarUrl: '',
   });
-  const [avatarFile, setAvatarFile] = useState(null);
+  const [videos, setVideos] = useState([]);
   const [previewUrl, setPreviewUrl] = useState('');
+  const [avatarFile, setAvatarFile] = useState(null);
+
+  const [userId, setUserId] = useState(null);
+
   const [isEditingPassword, setIsEditingPassword] = useState(false);
   const [passwordData, setPasswordData] = useState({
     oldPassword: '',
@@ -36,13 +41,15 @@ export default function EditProfile() {
             email: data.user.email,
             username: data.user.username,
             location: data.user.location,
-            avatarUrl: data.user.avatarUrl, // fileUrl 대신 avatarUrl 사용
+            avatarUrl: data.user.avatarUrl,
           });
-          // 기존 이미지가 있을 경우 previewUrl 설정
+
+          setUserId(data.user._id);
+
           if (data.user.avatarUrl) {
             setPreviewUrl(`http://localhost:4000/${data.user.avatarUrl.replace(/\\/g, '/')}`);
           } else {
-            setPreviewUrl('/default-avatar.png'); // 기본 이미지 URL 설정
+            setPreviewUrl('/default-avatar.png');
           }
         }
       } catch (error) {
@@ -52,6 +59,25 @@ export default function EditProfile() {
 
     fetchProfileData();
   }, []);
+
+  useEffect(() => {
+    if (userId) {
+      const fetchVideos = async () => {
+        try {
+          const response = await fetch(`http://localhost:4000/users/${userId}`);
+          const data = await response.json();
+
+          if (data.videos) {
+            setVideos(data.videos);
+          }
+        } catch (error) {
+          console.error('비디오 데이터를 가져오는 중 오류:', error);
+        }
+      };
+
+      fetchVideos();
+    }
+  }, [userId]);
 
   const handleInputChange = (event) => {
     const { name, value } = event.target;
@@ -64,15 +90,7 @@ export default function EditProfile() {
   const handleFileChange = (event) => {
     const file = event.target.files[0];
     setAvatarFile(file);
-    setPreviewUrl(URL.createObjectURL(file)); // 파일 선택 시 미리보기
-  };
-
-  const handlePasswordChange = (event) => {
-    const { name, value } = event.target;
-    setPasswordData((prevData) => ({
-      ...prevData,
-      [name]: value,
-    }));
+    setPreviewUrl(URL.createObjectURL(file));
   };
 
   const handleUpdateProfile = async () => {
@@ -82,7 +100,6 @@ export default function EditProfile() {
     formDataToSend.append('username', formData.username);
     formDataToSend.append('location', formData.location);
 
-    // 아바타 파일이 있는 경우 FormData에 추가
     if (avatarFile) {
       formDataToSend.append('avatar', avatarFile);
     }
@@ -96,13 +113,21 @@ export default function EditProfile() {
 
       if (response.ok) {
         alert('프로필이 업데이트되었습니다.');
-        router.push('/'); // 홈으로 이동
+        router.push('/');
       } else {
         console.error('프로필 업데이트 실패');
       }
     } catch (error) {
       console.error('프로필 업데이트 중 오류:', error);
     }
+  };
+
+  const handlePasswordChange = (event) => {
+    const { name, value } = event.target;
+    setPasswordData((prevData) => ({
+      ...prevData,
+      [name]: value,
+    }));
   };
 
   const handleUpdatePassword = async () => {
@@ -133,7 +158,7 @@ export default function EditProfile() {
   };
 
   const handleCancelPasswordEdit = () => {
-    setIsEditingPassword(false); // 비밀번호 입력 필드를 숨김
+    setIsEditingPassword(false);
   };
 
   return (
@@ -194,6 +219,23 @@ export default function EditProfile() {
           />
         </label>
 
+        <div className="uploaded-videos">
+          <h3>내가 올린 영상</h3>
+          {videos.length === 0 ? (
+            <p>업로드한 영상이 없습니다.</p>
+          ) : (
+            <ul>
+              {videos.map((video) => (
+                <li key={video._id}>
+                  <Link href={`/videos/${video._id}`}>
+                    <h4>{video.title}</h4>
+                  </Link>
+                </li>
+              ))}
+            </ul>
+          )}
+        </div>
+
         <label className="password-field">
           비밀번호
           {isEditingPassword ? (
@@ -252,7 +294,7 @@ export default function EditProfile() {
 
         <div className="button-group">
           <button type="button" onClick={handleUpdateProfile} className="save-button">
-            수정하기
+            프로필 수정하기
           </button>
         </div>
       </form>

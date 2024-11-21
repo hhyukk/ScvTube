@@ -126,10 +126,6 @@ nav .logo a {
   color: #333; /* 제목 색상 */
 }
 
-.video-title a {
-  text-decoration: none; /* 하이퍼링크의 밑줄 제거 */
-  color: inherit; /* 부모 요소의 색상 상속 */
-}
 
 /* 홈페이지 비디오 리스트와 카드 스타일 */
 .home-container {
@@ -160,6 +156,19 @@ nav .logo a {
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1); /* 그림자 추가 */
   text-align: center; /* 제목 가운데 정렬 */
   max-width: 300px; /* 최대 너비 조정 */
+}
+/* 비디오 플레이어를 감싸는 <a> 태그 스타일 */
+.home-video-item a {
+  all: unset; /* 모든 기본 스타일 제거 */
+  display: block; /* 블록 레벨 요소로 설정 */
+  color: inherit; /* 부모 색상 상속 */
+  cursor: pointer; /* 클릭 가능한 포인터 표시 */
+  text-align: center; /* 내용 중앙 정렬 */
+}
+
+.home-video-item a:hover {
+  color: inherit; /* 호버 시 색상 유지 */
+  text-decoration: none; /* 호버 시 밑줄 제거 */
 }
 
 /* 홈페이지 비디오 카드 스타일 */
@@ -741,4 +750,33 @@ li p {
 .button-group .save-button,
 .button-group .cancel-button {
   flex: 1; /* 버튼을 균등하게 배분 */
+}
+
+.uploaded-videos {
+  margin-top: 20px;
+}
+
+.uploaded-videos h3 {
+  font-size: 18px;
+  font-weight: bold;
+}
+
+.uploaded-videos ul {
+  list-style: none; /* 목록 점 제거 */
+  padding: 0;
+  margin: 0;
+}
+
+.uploaded-videos li {
+  margin-bottom: 10px;
+}
+
+.uploaded-videos a {
+  text-decoration: none; /* 링크 밑줄 제거 */
+  color: inherit; /* 부모 요소 글씨 색상 상속 */
+}
+
+.uploaded-videos a:hover {
+  text-decoration: none; /* 호버 시 밑줄 제거 */
+  color: inherit; /* 색상 유지 */
 }

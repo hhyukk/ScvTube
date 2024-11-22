@@ -3,12 +3,14 @@
 import './globals.css';
 import { useState, useEffect } from 'react';
 import Link from 'next/link';
+import { useRouter } from 'next/navigation';
 
 export default function RootLayout({ children }) {
   const [isMenuOpen, setMenuOpen] = useState(false);
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [searchKeyword, setSearchKeyword] = useState('');
   const [username, setUsername] = useState('');
+  const router = useRouter();
 
   useEffect(() => {
     // 페이지가 로드될 때 세션을 확인하여 로그인 상태 업데이트
@@ -23,6 +25,9 @@ export default function RootLayout({ children }) {
         if (data.loggedIn) {
           setIsLoggedIn(true);
           setUsername(data.user.username);
+        } else {
+          setIsLoggedIn(false);
+          setUsername('');
         }
       } catch (err) {
         console.error('세션 확인 오류:', err);
@@ -31,6 +36,20 @@ export default function RootLayout({ children }) {
 
     checkSession();
   }, []);
+
+  useEffect(() => {
+    // 비로그인 상태에서 접근 제한 페이지 리다이렉트 처리
+    const protectedRoutes = ['/upload', '/profile'];
+    const publicRoutes = ['/signup'];
+
+    if (!isLoggedIn && protectedRoutes.includes(window.location.pathname)) {
+      router.push('/login');
+    }
+
+    if (isLoggedIn && publicRoutes.includes(window.location.pathname)) {
+      router.push('/');
+    }
+  }, [isLoggedIn, router]);
 
   const toggleMenu = () => {
     setMenuOpen(!isMenuOpen);
